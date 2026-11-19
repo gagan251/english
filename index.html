@@ -145,7 +145,7 @@ body.locked nav,body.locked section{visibility:hidden}
 .ex span{color:#5b776c;font-size:13px}
 .card .ex{font-size:12px;padding:5px 8px;margin:0}.card .ex span{font-size:11px}
 .exr{margin:10px auto 0;max-width:420px;text-align:left;font-size:15px}
-.rev.warn{background:linear-gradient(135deg,#ffe8e0,#ffd9d9);color:#8a2a1c}
+.rev.warn{background:linear-gradient(135deg,#e6f7f1,#f3fbf8);color:#0b6b52}
 .hint2{font-size:12px;color:#5b776c;margin:6px 0 0}
 #toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,30px);background:#17332b;color:#fff;padding:12px 18px;border-radius:16px;font-weight:700;font-size:14px;max-width:min(92vw,420px);text-align:center;opacity:0;pointer-events:none;transition:.35s;z-index:90;box-shadow:0 8px 24px rgba(0,0,0,.3)}
 #toast.on{opacity:1;transform:translate(-50%,0)}
@@ -3292,7 +3292,10 @@ function fixBoxes(){S.learned.forEach(id=>{if(!S.box[id])S.box[id]={b:0,due:day(
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 function ensureDay(){if(S.done.date!==day())S.done={date:day(),ids:[]}}
 function greet(){const b=$("bubble");b.classList.remove("pop");void b.offsetWidth;b.classList.add("pop");speak("Hi "+S.name+"!","en-US")}
-function speak(t,l){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=l;speechSynthesis.speak(u)}catch(e){}}
+let VOICES=[];try{VOICES=speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{VOICES=speechSynthesis.getVoices()}}catch(e){}
+const FEM=/female|woman|samantha|zira|aria|jenny|susan|karen|moira|tessa|serena|libby|sonia|natasha|hazel|fiona|victoria|google uk english female|google us english|heera|neerja/i;
+function pickVoice(l){const lg=l.slice(0,2).toLowerCase(),m=VOICES.filter(v=>v.lang.toLowerCase().startsWith(lg));return m.find(v=>FEM.test(v.name))||m.find(v=>v.lang.toLowerCase()===l.toLowerCase())||m[0]||null}
+function speak(t,l,teacher){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=l;const v=pickVoice(l);if(v)u.voice=v;u.pitch=.85;u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
 
 // petals
 for(let i=0;i<12;i++){const p=document.createElement("div");p.className="petal";p.textContent=["🌱","🍃","🌼","✨","📖"][i%5];
@@ -3336,7 +3339,7 @@ function renderHome(){
  const due=dueIds().length;$("sDue").textContent=due;
  $("bkInfo").textContent=S.lastBackup?"Last saved to your phone: "+S.lastBackup:"Not saved to your phone yet.";
  {const w=$("warnBox"),n=S.learned.length+S.known.length,old=S.lastBackup?(Date.now()-new Date(S.lastBackup+"T00:00:00"))/864e5:999;
-  if(!STORE_OK){w.style.display="block";w.textContent="⚠️ This browser cannot remember your progress here. Open the page in Chrome or Safari (not inside another app) and tap “Save to my phone” after each lesson."}
+  if(!STORE_OK){w.style.display="block";w.textContent="💾 Tap “Save to my phone” after each lesson to keep your progress."}
   else if(n>=10&&old>7){w.style.display="block";w.textContent="💾 Please save a copy of your progress to your phone (tap “Save to my phone” below). It only takes a second."}
   else w.style.display="none"}
  $("revBox").innerHTML=due?`🔁 <b>${due}</b> word${due>1?"s":""} ready to review today<br><button class="btn y mt" id="goReview" style="padding:10px 22px">Review now</button>`:"✅ No words to review right now. Come back tomorrow!";
