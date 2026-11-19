@@ -1,0 +1,3592 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Word Garden 🌱</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#ff7a59;--purple:#0b8a6a;--blue:#0a7a91;--green:#2bb673;--yellow:#ffc233;--ink:#17332b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Nunito","Segoe UI",system-ui,sans-serif;color:var(--ink);min-height:100vh;
+background:linear-gradient(160deg,#eefaf3,#e2f4f0 45%,#fff3dc);background-attachment:fixed;overflow-x:hidden}
+.petal{position:fixed;top:-40px;font-size:22px;opacity:.7;pointer-events:none;animation:fall linear infinite;z-index:0}
+@keyframes fall{to{transform:translateY(112vh) rotate(360deg)}}
+#app{position:relative;z-index:1;max-width:980px;margin:auto;padding:16px}
+header{text-align:center;padding:10px 0}
+h1{font-size:clamp(28px,6vw,44px);background:linear-gradient(90deg,var(--purple),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:#5b776c;font-size:14px;margin-top:2px}
+nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+nav button{border:none;padding:11px 20px;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;background:#fff;color:var(--ink);box-shadow:0 4px 12px rgba(20,90,70,.18);transition:.2s}
+nav button.on{background:linear-gradient(90deg,var(--purple),var(--blue));color:#fff;transform:translateY(-2px)}
+section{display:none;animation:pop .4s}section.on{display:block}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.panel{background:rgba(255,255,255,.85);border-radius:26px;padding:22px;box-shadow:0 10px 30px rgba(20,90,70,.18);margin-bottom:16px}
+.hello{font-size:26px;font-weight:800;margin-bottom:4px}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:4px;margin:-6px -6px -4px 0}
+.heroText{flex:1;min-width:0}
+.hero{position:relative;padding-top:44px}
+.girlWrap{position:relative;flex:none;width:clamp(120px,31%,190px)}
+.girlWrap .girl{width:100%;display:block}
+.bubble{position:absolute;bottom:calc(100% - 10px);right:10px;z-index:2;width:max-content;max-width:min(220px,62vw);background:#fff;border:2px solid #bfe3d2;border-radius:18px;padding:7px 14px;font-weight:800;font-size:15px;line-height:1.25;color:var(--ink);box-shadow:0 6px 16px rgba(20,90,70,.18);transform-origin:80% 100%;overflow-wrap:anywhere}
+.bubble::after{content:"";position:absolute;right:26px;bottom:-9px;width:14px;height:14px;background:#fff;border-right:2px solid #bfe3d2;border-bottom:2px solid #bfe3d2;transform:rotate(45deg);border-radius:0 0 4px 0}
+.learnPanel{display:flex;align-items:center;gap:10px}
+.learnMain{flex:1;min-width:0}
+.teacher{flex:none;width:clamp(92px,24%,176px);align-self:flex-end;display:flex;flex-direction:column;align-items:center;margin-bottom:-6px}
+.teacher .tb{position:static;width:auto;max-width:100%;font-size:13px;padding:6px 10px;margin-bottom:12px;text-align:center;border-radius:16px;transform-origin:50% 100%}
+.teacher .tb:empty{display:none}
+.teacher .tb::after{right:auto;left:50%;margin-left:-7px}
+.tgirl{width:100%;display:block}
+@media (min-width:640px){.teacher .tb{font-size:15px}}
+@media (max-width:639px){
+ .learnPanel{flex-direction:column;align-items:stretch;gap:0}
+ .teacher{order:-1;flex-direction:row;align-self:stretch;justify-content:flex-end;align-items:flex-end;width:auto;margin:-8px 0 4px}
+ .teacher .tgirl{width:96px;flex:none}
+ .teacher .tb{flex:0 1 auto;max-width:calc(100% - 108px);margin:0 6px 26px 0;font-size:14px;text-align:left;transform-origin:100% 60%}
+ .teacher .tb::after{left:auto;right:-8px;bottom:auto;top:50%;margin:-7px 0 0;transform:rotate(-45deg)}
+}
+.bubble.pop{animation:popin .6s cubic-bezier(.2,1.4,.4,1)}
+@keyframes popin{0%{transform:scale(.2);opacity:0}100%{transform:scale(1);opacity:1}}
+.girl{flex:none;pointer-events:none;user-select:none;-webkit-user-drag:none;-webkit-mask-image:linear-gradient(#000 86%,transparent);mask-image:linear-gradient(#000 86%,transparent);animation:bob 4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){.girl{animation:none}}
+.row{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:center}
+.ring{--p:0;width:150px;height:150px;border-radius:50%;background:conic-gradient(var(--purple) calc(var(--p)*1%),#e3f1e9 0);display:grid;place-items:center}
+.ring div{width:118px;height:118px;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center;font-weight:800;font-size:26px;line-height:1.1}
+.ring small{display:block;font-size:12px;color:#5b776c;font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;flex:1;min-width:260px}
+.stat{background:linear-gradient(135deg,#fff,#eef8f2);border-radius:18px;padding:12px;text-align:center;box-shadow:0 3px 10px rgba(20,90,70,.12)}
+.stat b{display:block;font-size:24px}.stat span{font-size:12px;color:#5b776c}
+@media (min-width:640px){.stats{grid-template-columns:repeat(3,1fr)}}
+h3{margin:14px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{border:2px solid #d3e8dc;background:#fff;border-radius:999px;padding:8px 16px;font-weight:700;cursor:pointer;font-size:15px;color:var(--ink)}
+.chip.on{background:var(--purple);color:#fff;border-color:var(--purple)}
+input[type=number],input[type=text],input[type=search],select{padding:9px 14px;border-radius:999px;border:2px solid #d3e8dc;font-size:15px;width:110px;text-align:center;color:var(--ink)}
+input[type=text],input[type=search]{width:220px}
+input[type=search]{padding:9px 14px;border-radius:999px;border:2px solid #d3e8dc;font-size:15px;text-align:center;color:var(--ink);background:#fff}
+input:focus,select:focus{outline:3px solid rgba(11,138,106,.35);border-color:var(--purple)}
+input[type=password]{padding:10px 14px;border-radius:999px;border:2px solid #d3e8dc;width:160px;text-align:center;color:var(--ink);font-size:22px;letter-spacing:.35em}
+input[type=password]::placeholder{letter-spacing:.2em;font-size:16px}
+#lock{position:fixed;inset:0;background:rgba(10,50,40,.85);display:none;place-items:center;z-index:70;padding:16px}
+#lock .panel{max-width:380px;text-align:center}
+body.locked nav,body.locked section{visibility:hidden}
+.pinrow{margin-top:12px;font-size:13px;color:#5b776c}
+.pinhint{font-size:12px;color:#5b776c;margin:8px 0 0;line-height:1.35}
+.btn{border:none;border-radius:999px;padding:13px 26px;font-size:16px;font-weight:800;color:#fff;cursor:pointer;background:linear-gradient(90deg,var(--purple),var(--blue));box-shadow:0 6px 16px rgba(11,138,106,.4);transition:.2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.g{background:linear-gradient(90deg,#3b82c4,#2563b0)}
+.btn.y{background:linear-gradient(90deg,#ffb347,var(--pink))}
+.btn.w{background:#fff;color:var(--ink);box-shadow:0 3px 10px rgba(0,0,0,.12)}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.center{text-align:center}.mt{margin-top:14px}
+/* big learn card */
+.bar{height:12px;background:#fff;border-radius:99px;overflow:hidden;margin:0 auto 14px;max-width:560px;box-shadow:inset 0 1px 4px rgba(0,0,0,.12)}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .4s;width:0}
+.big{perspective:1000px;width:min(92%,460px);height:300px;margin:8px auto;cursor:pointer}
+.inner{position:relative;width:100%;height:100%;transition:transform .65s;transform-style:preserve-3d}
+.flip .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:28px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;text-align:center;box-shadow:0 14px 34px rgba(10,50,40,.3)}
+.front{color:#fff}
+.front .w{font-size:clamp(34px,9vw,54px);font-weight:900;text-shadow:0 3px 6px rgba(0,0,0,.25);word-break:break-word}
+.tag{margin-top:10px;background:rgba(255,255,255,.3);padding:4px 14px;border-radius:99px;font-size:14px}
+.hint{position:absolute;bottom:12px;font-size:12px;opacity:.9;color:#fff}
+.back{transform:rotateY(180deg);background:#fff;border:5px solid var(--c);color:var(--ink)}
+.back .l{font-size:12px;font-weight:800;color:var(--c);letter-spacing:1px}
+.back .t{font-size:30px;font-weight:800;margin:2px 0 14px}
+.spk{border:none;background:rgba(255,255,255,.35);border-radius:50%;width:38px;height:38px;font-size:18px;cursor:pointer;margin:6px 4px 0}
+.back .spk{background:#e6f4ec;width:auto;min-width:38px;height:38px;border-radius:19px;padding:0 13px;font-size:14px;font-weight:800;color:var(--ink)}
+.after{display:none;gap:12px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.after.show{display:flex}
+/* test */
+.q{font-size:clamp(30px,7vw,44px);font-weight:900;text-align:center;margin:6px 0 4px;word-break:break-word}
+.qcap{text-align:center;color:#5b776c;font-weight:700;margin-bottom:14px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;max-width:640px;margin:auto}
+.opt{border:3px solid #d3e8dc;background:#fff;border-radius:20px;padding:16px;font-size:19px;font-weight:700;cursor:pointer;color:var(--ink);transition:.15s}
+.opt:hover:not(:disabled){border-color:var(--purple);transform:translateY(-2px)}
+.opt.ok{background:#d3f9e8;border-color:var(--green)}
+.opt.no{background:#ffe0e6;border-color:#ff6b81}
+.stars{font-size:46px;text-align:center}
+.score{font-size:40px;font-weight:900;text-align:center}
+.wrong{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+.wrong div{background:#fff;border-radius:14px;padding:8px 12px;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+/* all words */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.card{perspective:900px;height:200px;cursor:pointer}
+.card .face{box-shadow:0 6px 16px rgba(10,50,40,.25);border-radius:20px}
+.card .front .w{font-size:26px}
+.card .back .t{font-size:19px;margin-bottom:6px}
+.card.known .front::after{content:"✓";position:absolute;top:8px;left:10px;width:26px;height:26px;border-radius:50%;background:#fff;color:var(--green);display:grid;place-items:center;font-weight:900}
+.tools{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.tools input,.tools select{width:auto;min-width:160px;padding:9px 14px;border-radius:999px;border:2px solid #d3e8dc;font:inherit;font-size:15px;text-align:center;color:var(--ink);background:#fff}
+.pager{display:flex;gap:14px;justify-content:center;align-items:center;margin:18px 0;font-weight:700}
+#ov{position:fixed;inset:0;background:rgba(10,50,40,.6);display:none;place-items:center;z-index:50;padding:16px}
+#ov .panel,#pick .panel{max-width:400px;text-align:center}
+#pick{position:fixed;inset:0;background:rgba(10,50,40,.6);display:none;place-items:center;z-index:60;padding:16px;overflow:auto}
+.pk{display:flex;align-items:center;gap:8px;margin-top:10px}
+.pk .go{flex:1;text-align:left;background:#fff;border:2px solid #d3e8dc;border-radius:16px;padding:12px 14px;font:inherit;font-weight:800;font-size:17px;cursor:pointer;color:#17332b}
+.pk .go small{display:block;font-weight:600;font-size:12px;color:#5b776c}
+.pk .go:hover{border-color:var(--purple)}
+.pk .del{background:none;border:none;font-size:18px;cursor:pointer;opacity:.6}
+.sw{background:none;border:none;font:inherit;font-size:13px;font-weight:800;color:var(--purple);cursor:pointer;text-decoration:underline;margin-left:6px}
+#cv{position:fixed;inset:0;pointer-events:none;z-index:60}
+.kgrid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+.kw{border:2px solid #d3e8dc;background:#fff;border-radius:14px;padding:8px 12px;font-size:15px;font-weight:700;cursor:pointer;color:var(--ink);text-align:left;line-height:1.2}
+.kw small{display:block;font-weight:600;font-size:11px;color:#5b776c}
+.kw.on{background:linear-gradient(135deg,#d3f9e8,#d8f3ff);border-color:var(--green)}
+.kw.on::before{content:"⭐ "}
+.kw:disabled{opacity:.5;cursor:default}
+.edit{background:none;border:none;cursor:pointer;font-size:16px}
+.ex{background:#eef8f2;border-radius:14px;padding:8px 12px;margin:0 0 8px;font-size:15px;line-height:1.35;max-width:100%}
+.ex span{color:#5b776c;font-size:13px}
+.card .ex{font-size:12px;padding:5px 8px;margin:0}.card .ex span{font-size:11px}
+.exr{margin:10px auto 0;max-width:420px;text-align:left;font-size:15px}
+.rev{background:linear-gradient(135deg,#fff4d6,#ffe6d6);border-radius:18px;padding:12px 16px;margin-top:14px;text-align:center;font-weight:700}
+.ptiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:14px 0}
+.chart{display:flex;gap:4px;align-items:flex-end;padding:10px 4px 0;border-bottom:2px solid #d3e8dc}
+.pbar{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+.pv{font-size:11px;font-weight:800;margin-bottom:2px;height:14px}
+.pcol{width:100%;max-width:32px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,#ffb347,var(--pink));min-height:3px}
+.pcol.goal{background:linear-gradient(180deg,var(--green),var(--blue))}
+.pcol.zero{background:#dcebe2}
+.pbar.now .pcol{box-shadow:0 0 0 3px rgba(255,209,102,.9)}
+.plab{display:flex;gap:4px;padding:4px 4px 0}
+.plab div{flex:1;min-width:0;text-align:center;font-size:10px;color:#5b776c;font-weight:700;line-height:1.15}
+.plist{margin-top:14px;display:grid;gap:6px}
+.prow{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:6px;background:#fff;border-radius:12px;padding:8px 12px;font-size:14px;align-items:center;box-shadow:0 2px 6px rgba(20,90,70,.1)}
+.prow.h{background:none;box-shadow:none;font-size:12px;color:#5b776c;font-weight:800}
+.prow.cur{border:2px solid var(--yellow)}
+.prow.zero{opacity:.55}
+.prow span:not(:first-child){text-align:center}
+.backup{margin-top:18px;padding-top:14px;border-top:2px dashed #d3e8dc;text-align:center;font-size:13px;color:#5b776c}
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="ov"><div class="panel"><div style="font-size:50px">📚</div><h2 id="nmTitle">Welcome! · Xin chào</h2><p class="mt">What's your name?</p><p class="mt"><input type="text" id="nm" maxlength="30" autocomplete="off" placeholder="Your name"></p>
+<p class="mt"><button class="btn" id="nmGo">Let's start 🎉</button> <button class="btn w" id="nmCancel" style="display:none">Cancel</button></p></div></div>
+<div id="app">
+<header><h1>🌱 Word Garden</h1><div class="sub">English • Tiếng Việt — learn a few new words every day</div></header>
+<nav id="nav">
+ <button data-t="home" class="on">🏠 Home</button>
+ <button data-t="learn">📖 Learn</button>
+ <button data-t="test">📝 Test</button>
+ <button data-t="prog">📊 Progress</button>
+ <button data-t="know">⭐ Words I know</button>
+ <button data-t="all">🗂 All words</button>
+</nav>
+
+<section id="home" class="on">
+ <div class="panel">
+  <div class="hero">
+   <div class="heroText"><div class="hello" id="hello"></div><div class="sub" id="plan"></div></div>
+   <div class="girlWrap"><div class="bubble" id="bubble" role="status"></div><img class="girl" alt="" aria-hidden="true" draggable="false" src="data:image/webp;base64,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"></div>
+  </div>
+  <div class="row mt">
+   <div class="ring" id="ring"><div><span id="ringTxt"></span></div></div>
+   <div class="stats">
+    <div class="stat"><b id="sLearned">0</b><span>words learned</span></div>
+    <div class="stat"><b id="sStreak">0🔥</b><span>day streak</span></div>
+    <div class="stat"><b id="sKnown">0</b><span>already known</span></div>
+    <div class="stat"><b id="sBest">–</b><span>best test</span></div>
+    <div class="stat"><b id="sDue">0</b><span>to review today</span></div>
+    <div class="stat"><b id="sLeft">0</b><span>days to finish</span></div>
+   </div>
+  </div>
+  <h3 class="center">🎯 How many new words per day?</h3>
+  <div class="chips" id="goals"></div>
+  <p class="center mt">or type your own: <input type="number" id="cg" min="1" max="200" placeholder="e.g. 12"> <button class="btn w" id="cgGo" style="padding:9px 18px">Set</button></p>
+  <div class="rev" id="revBox"></div>
+  <p class="center mt"><button class="btn" id="goLearn">Start today's words ✨</button> <button class="btn g" id="goTest">Take a test 📝</button></p>
+  <div class="backup">💾 Your progress is saved in this browser only. Save a backup file in case you change phone or clear data.<br><button class="btn w" id="bkSave" style="padding:8px 16px;margin-top:8px">Save my progress</button> <button class="btn w" id="bkLoad" style="padding:8px 16px;margin-top:8px">Restore</button><input type="file" id="bkFile" accept=".json,application/json" style="display:none">
+  <p style="margin-top:12px"><button class="sw" id="fresh" style="margin-left:0">Not you? Start fresh</button></p></div>
+ </div>
+</section>
+
+<section id="learn"><div class="panel learnPanel"><div class="learnMain" id="learnBox"></div><aside class="teacher" aria-hidden="true"><div class="bubble tb" id="tBubble"></div><img class="girl tgirl" id="tGirl" alt="" draggable="false"></aside></div></section>
+
+<section id="test"><div class="panel" id="testBox"></div></section>
+
+<section id="prog"><div class="panel" id="progBox"></div></section>
+
+<section id="know"><div class="panel">
+ <h2 class="center">⭐ Words I already know</h2>
+ <p class="center sub">Tap the words you already know — we'll skip them in your daily lessons. Tap again to undo.</p>
+ <div class="tools mt"><input id="kq" placeholder="🔍 Search…"><button class="btn w" id="kAll" style="padding:9px 16px">Select this page</button><button class="btn w" id="kNone" style="padding:9px 16px">Clear this page</button></div>
+ <div class="center sub" id="kCount"></div>
+ <div class="kgrid" id="kgrid"></div>
+ <div class="pager"><button class="btn w" id="kprev">← Prev</button><span id="kpg"></span><button class="btn w" id="knext">Next →</button></div>
+</div></section>
+<section id="all">
+ <div class="panel">
+  <div class="tools"><input id="q" placeholder="🔍 Search…"><select id="lvf"><option value="">All levels</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option></select><select id="sf"><option value="all">All</option><option value="new">Not learned yet</option><option value="known">Learned ✓</option></select></div>
+  <div class="grid" id="grid"></div>
+  <div class="pager"><button class="btn w" id="prev">← Prev</button><span id="pg"></span><button class="btn w" id="next">Next →</button></div>
+ </div>
+</section>
+</div>
+
+<script>
+// word|type|Vietnamese|Hindi
+const RAW=`
+a, an|article|một|A1
+about|prep.|về|A1
+above|prep.|ở trên|A1
+across|prep.|băng qua|A1
+action|n.|hành động|A1
+activity|n.|hoạt động|A1
+actor|n.|nam diễn viên|A1
+actress|n.|nữ diễn viên|A1
+add|v.|thêm|A1
+address|n.|địa chỉ|A1
+adult|n.|người lớn|A1
+advice|n.|lời khuyên|A1
+afraid|adj.|sợ hãi|A1
+after|prep.|sau khi, sau|A1
+afternoon|n.|buổi chiều|A1
+again|adv.|lại|A1
+age|n.|tuổi|A1
+ago|adv.|cách đây, trước|A1
+agree|v.|đồng ý|A1
+air|n.|không khí|A1
+airport|n.|sân bay|A1
+all|det., pron.|tất cả|A1
+also|adv.|cũng|A1
+always|adv.|luôn luôn|A1
+amazing|adj.|đáng kinh ngạc, tuyệt vời|A1
+and|conj.|và|A1
+angry|adj.|tức giận|A1
+animal|n.|động vật|A1
+another|det./pron.|một cái khác|A1
+answer|n./v.|câu trả lời, trả lời|A1
+any|det., pron.|bất kỳ|A1
+anyone|pron.|bất kỳ ai|A1
+anything|pron.|bất cứ thứ gì|A1
+apartment|n.|căn hộ|A1
+apple|n.|quả táo|A1
+April|n.|tháng Tư|A1
+area|n.|khu vực|A1
+arm|n.|cánh tay|A1
+around|prep.|xung quanh|A1
+arrive|v.|đến nơi|A1
+art|n.|nghệ thuật|A1
+article|n.|bài báo|A1
+artist|n.|nghệ sĩ|A1
+as|prep.|như, là|A1
+ask|v.|hỏi|A1
+at|prep.|ở, tại|A1
+August|n.|tháng Tám|A1
+aunt|n.|dì / cô|A1
+away|adv.|xa|A1
+awesome|adj.|tuyệt vời|A1
+baby|n.|em bé|A1
+back|n., adv.|lưng, trở lại|A1
+bad|adj.|xấu, tệ|A1
+bag|n.|cái túi|A1
+ball|n.|quả bóng|A1
+banana|n.|quả chuối|A1
+band|n.|ban nhạc|A1
+bank (money)|n.|ngân hàng|A1
+bar|n.|quán bar, thanh|A1
+baseball|n.|bóng chày|A1
+basketball|n.|bóng rổ|A1
+bath|n.|bồn tắm|A1
+bathroom|n.|phòng tắm|A1
+be|v., aux.|thì, là, ở|A1
+beach|n.|bãi biển|A1
+beautiful|adj.|đẹp|A1
+because|conj.|bởi vì|A1
+because of|prep.|bởi vì, do|A1
+become|v.|trở thành|A1
+bed|n.|cái giường|A1
+bedroom|n.|phòng ngủ|A1
+beer|n.|bia|A1
+before|prep.|trước|A1
+begin|v.|bắt đầu|A1
+beginning|n.|sự bắt đầu|A1
+behind|prep.|phía sau|A1
+believe|v.|tin tưởng|A1
+below|prep.|bên dưới|A1
+best|adj.|tốt nhất|A1
+better|adj.|tốt hơn|A1
+between|prep.|ở giữa|A1
+bicycle|n.|xe đạp|A1
+big|adj.|to, lớn|A1
+bike|n.|xe đạp|A1
+bill|n.|hóa đơn|A1
+bird|n.|con chim|A1
+birthday|n.|sinh nhật|A1
+black|adj.|màu đen|A1
+blog|n.|blog, nhật ký trực tuyến|A1
+blond|adj.|tóc vàng hoe|A1
+blue|adj.|màu xanh dương|A1
+boat|n.|con thuyền|A1
+body|n.|cơ thể|A1
+book|n.|quyển sách|A1
+boot|n.|ủng, bốt|A1
+bored|adj.|chán|A1
+boring|adj.|nhàm chán|A1
+born|v.|được sinh ra|A1
+both|det./pron.|cả hai|A1
+bottle|n.|cái chai|A1
+box|n.|cái hộp|A1
+boy|n.|cậu bé|A1
+boyfriend|n.|bạn trai|A1
+bread|n.|bánh mì|A1
+break|v., n.|làm vỡ, nghỉ giải lao|A1
+breakfast|n.|bữa sáng|A1
+bring|v.|mang đến|A1
+brother|n.|anh / em trai|A1
+brown|adj.|màu nâu|A1
+build|v.|xây dựng|A1
+building|n.|tòa nhà|A1
+bus|n.|xe buýt|A1
+business|n.|kinh doanh|A1
+busy|adj.|bận rộn|A1
+but|conj.|nhưng|A1
+butter|n.|bơ|A1
+buy|v.|mua|A1
+by|prep.|bởi, bằng, gần|A1
+bye|exclam.|tạm biệt|A1
+cafe|n.|quán cà phê|A1
+cake|n.|bánh ngọt|A1
+call|v.|gọi|A1
+camera|n.|máy ảnh|A1
+can|modal|có thể|A1
+cannot|v.|không thể|A1
+capital|n., adj.|thủ đô, vốn|A1
+car|n.|ô tô|A1
+card|n.|thẻ|A1
+career|n.|sự nghiệp|A1
+carrot|n.|cà rốt|A1
+carry|v.|mang, xách|A1
+cat|n.|con mèo|A1
+cent|n.|xu|A1
+center|n.|trung tâm|A1
+chair|n.|cái ghế|A1
+change|v.|thay đổi|A1
+chart|n.|biểu đồ|A1
+cheap|adj.|rẻ|A1
+check|v.|kiểm tra|A1
+cheese|n.|phô mai|A1
+chicken|n.|con gà, thịt gà|A1
+child|n.|đứa trẻ|A1
+chocolate|n.|sô-cô-la|A1
+choose|v.|chọn|A1
+city|n.|thành phố|A1
+class|n.|lớp học|A1
+classroom|n.|phòng học|A1
+clean|adj.|sạch sẽ|A1
+climb|v.|leo trèo|A1
+clock|n.|đồng hồ|A1
+close|v.|đóng lại|A1
+clothes|n.|quần áo|A1
+club|n.|câu lạc bộ|A1
+coat|n.|áo khoác|A1
+coffee|n.|cà phê|A1
+cold|adj.|lạnh|A1
+college|n.|trường đại học, cao đẳng|A1
+color|n.|màu sắc|A1
+come|v.|đến|A1
+common|adj.|phổ biến, chung|A1
+company|n.|công ty|A1
+compare|v.|so sánh|A1
+complete|adj., v.|hoàn chỉnh, hoàn thành|A1
+computer|n.|máy tính|A1
+concert|n.|buổi hòa nhạc|A1
+conversation|n.|cuộc trò chuyện|A1
+cook|v.|nấu ăn|A1
+cooking|n.|việc nấu ăn|A1
+cool|adj.|mát mẻ, ngầu|A1
+correct|adj.|đúng|A1
+cost|n.|chi phí, giá|A1
+could|modal|có thể (quá khứ)|A1
+country|n.|đất nước|A1
+course|n.|khóa học|A1
+cousin|n.|anh chị em họ|A1
+cow|n.|con bò|A1
+cream|n.|kem|A1
+create|v.|tạo ra|A1
+culture|n.|văn hóa|A1
+cup|n.|cái cốc|A1
+customer|n.|khách hàng|A1
+cut|v.|cắt|A1
+dad|n.|bố|A1
+dance|v.|nhảy múa|A1
+dancer|n.|vũ công|A1
+dancing|n.|khiêu vũ|A1
+dangerous|adj.|nguy hiểm|A1
+dark|adj.|tối|A1
+date|n.|ngày tháng|A1
+daughter|n.|con gái|A1
+day|n.|ngày|A1
+dear|adj.|thân mến|A1
+December|n.|tháng Mười Hai|A1
+decide|v.|quyết định|A1
+delicious|adj.|ngon|A1
+describe|v.|mô tả|A1
+description|n.|sự mô tả|A1
+design|n./v.|thiết kế|A1
+desk|n.|bàn làm việc|A1
+detail|n.|chi tiết|A1
+dialogue|n.|đoạn hội thoại|A1
+dictionary|n.|từ điển|A1
+die|v.|chết|A1
+diet|n.|chế độ ăn|A1
+difference|n.|sự khác biệt|A1
+different|adj.|khác nhau|A1
+difficult|adj.|khó khăn|A1
+dinner|n.|bữa tối|A1
+dirty|adj.|bẩn|A1
+discuss|v.|thảo luận|A1
+dish|n.|món ăn, cái đĩa|A1
+do|v., aux.|làm|A1
+doctor|n.|bác sĩ|A1
+dog|n.|con chó|A1
+dollar|n.|đô la|A1
+door|n.|cửa|A1
+down|adv.|xuống|A1
+downstairs|adv.|ở tầng dưới|A1
+draw|v.|vẽ|A1
+dress|n.|chiếc váy|A1
+drink|v.|uống|A1
+drive|v.|lái xe|A1
+driver|n.|tài xế|A1
+during|prep.|trong suốt|A1
+each|det./pron./adv.|mỗi|A1
+ear|n.|tai|A1
+early|adj.|sớm|A1
+east|n.|phía đông|A1
+easy|adj.|dễ dàng|A1
+eat|v.|ăn|A1
+egg|n.|quả trứng|A1
+eight|number|tám|A1
+eighteen|number|mười tám|A1
+eighty|number|tám mươi|A1
+elephant|n.|con voi|A1
+eleven|number|mười một|A1
+else|adv.|khác, nữa|A1
+email|n.|thư điện tử|A1
+end|n.|phần cuối, sự kết thúc|A1
+enjoy|v.|thích, tận hưởng|A1
+enough|det.|đủ|A1
+euro|n.|đồng euro|A1
+even|adv.|thậm chí|A1
+evening|n.|buổi tối|A1
+event|n.|sự kiện|A1
+ever|adv.|từng, bao giờ|A1
+every|det.|mỗi, mọi|A1
+everybody|pron.|mọi người|A1
+everyone|pron.|mọi người|A1
+everything|pron.|mọi thứ|A1
+exam|n.|kỳ thi|A1
+example|n.|ví dụ|A1
+excited|adj.|hào hứng|A1
+exciting|adj.|thú vị, gây phấn khích|A1
+exercise|n., v.|bài tập, tập thể dục|A1
+expensive|adj.|đắt tiền|A1
+explain|v.|giải thích|A1
+extra|adj.|thêm, phụ|A1
+eye|n.|mắt|A1
+face|n.|khuôn mặt|A1
+fact|n.|sự thật|A1
+fall|v., n.|ngã, rơi|A1
+false|adj.|sai, giả|A1
+family|n.|gia đình|A1
+famous|adj.|nổi tiếng|A1
+fantastic|adj.|tuyệt diệu|A1
+far|adv.|xa|A1
+farm|n.|nông trại|A1
+farmer|n.|nông dân|A1
+fast|adj.|nhanh|A1
+fat|adj.|béo|A1
+father|n.|cha, bố|A1
+favorite|adj.|yêu thích|A1
+February|n.|tháng Hai|A1
+feel|v.|cảm thấy|A1
+feeling|n.|cảm giác|A1
+festival|n.|lễ hội|A1
+few|det.|một vài|A1
+fifteen|number|mười lăm|A1
+fifth|number|thứ năm|A1
+fifty|number|năm mươi|A1
+fill|v.|làm đầy|A1
+final|adj.|cuối cùng|A1
+find|v.|tìm thấy|A1
+fine|adj.|ổn, tốt|A1
+finish|v.|hoàn thành|A1
+fire|n.|lửa|A1
+first|det./number, adv.|đầu tiên, thứ nhất|A1
+fish|n.|con cá|A1
+five|number|năm|A1
+flight|n.|chuyến bay|A1
+floor|n.|sàn nhà, tầng|A1
+flower|n.|bông hoa|A1
+fly|v.|bay|A1
+follow|v.|đi theo|A1
+food|n.|thức ăn|A1
+foot|n.|bàn chân|A1
+football|n.|bóng đá|A1
+for|prep.|cho, để|A1
+forget|v.|quên|A1
+form|n., v.|mẫu đơn, hình thức, tạo thành|A1
+forty|number|bốn mươi|A1
+four|number|bốn|A1
+fourteen|number|mười bốn|A1
+fourth|number|thứ tư|A1
+free|adj.|miễn phí, tự do|A1
+Friday|n.|thứ Sáu|A1
+friend|n.|bạn|A1
+friendly|adj.|thân thiện|A1
+from|prep.|từ|A1
+front|n., adj.|phía trước|A1
+fruit|n.|trái cây|A1
+full|adj.|đầy, no|A1
+fun|n.|niềm vui|A1
+funny|adj.|buồn cười|A1
+future|n.|tương lai|A1
+game|n.|trò chơi|A1
+garden|n.|khu vườn|A1
+geography|n.|địa lý|A1
+get|v.|nhận, lấy, trở nên|A1
+girl|n.|cô gái|A1
+girlfriend|n.|bạn gái|A1
+give|v.|cho, tặng|A1
+glass|n.|cái ly, thủy tinh|A1
+go|v.|đi|A1
+good|adj.|tốt|A1
+goodbye|exclam.|tạm biệt|A1
+grandfather|n.|ông|A1
+grandmother|n.|bà|A1
+grandparent|n.|ông bà|A1
+gray|adj., n.|màu xám|A1
+great|adj.|tuyệt vời, to lớn|A1
+green|adj.|màu xanh lá|A1
+group|n.|nhóm|A1
+grow|v.|lớn lên, trồng|A1
+guess|v.|đoán|A1
+guitar|n.|đàn ghi-ta|A1
+gym|n.|phòng tập thể dục|A1
+hair|n.|tóc|A1
+half|n.|một nửa|A1
+hand|n.|bàn tay|A1
+happen|v.|xảy ra|A1
+happy|adj.|vui vẻ|A1
+hard|adj.|khó, cứng|A1
+hat|n.|cái mũ|A1
+hate|v.|ghét|A1
+have|v.|có|A1
+have to|modal|phải|A1
+he|pron.|anh ấy|A1
+head|n.|cái đầu|A1
+health|n.|sức khỏe|A1
+healthy|adj.|khỏe mạnh|A1
+hear|v.|nghe thấy|A1
+hello|exclam.|xin chào|A1
+help|v.|giúp đỡ|A1
+her|pron., det.|cô ấy, của cô ấy|A1
+here|adv.|ở đây|A1
+hey|exclam.|này, ê|A1
+hi|exclam.|chào|A1
+high|adj.|cao|A1
+him|pron.|anh ấy (tân ngữ)|A1
+his|det.|của anh ấy|A1
+history|n.|lịch sử|A1
+hobby|n.|sở thích|A1
+home|n.|nhà|A1
+homework|n.|bài tập về nhà|A1
+hope|v.|hy vọng|A1
+horse|n.|con ngựa|A1
+hospital|n.|bệnh viện|A1
+hot|adj.|nóng|A1
+hotel|n.|khách sạn|A1
+hour|n.|giờ, tiếng|A1
+house|n.|ngôi nhà|A1
+how|adv.|như thế nào|A1
+however|adv.|tuy nhiên|A1
+hundred|number|một trăm|A1
+hungry|adj.|đói|A1
+husband|n.|chồng|A1
+I|pron.|tôi|A1
+ice|n.|đá, băng|A1
+ice cream|n.|kem|A1
+idea|n.|ý tưởng|A1
+if|conj.|nếu|A1
+imagine|v.|tưởng tượng|A1
+important|adj.|quan trọng|A1
+improve|v.|cải thiện|A1
+in|prep., adv.|trong|A1
+include|v.|bao gồm|A1
+information|n.|thông tin|A1
+interest|n., v.|sự quan tâm, sở thích, làm quan tâm|A1
+interested|adj.|quan tâm, hứng thú|A1
+interesting|adj.|thú vị|A1
+internet|n.|mạng internet|A1
+interview|n., v.|phỏng vấn|A1
+into|prep.|vào trong|A1
+introduce|v.|giới thiệu|A1
+island|n.|hòn đảo|A1
+it|pron.|nó|A1
+its|det.|của nó|A1
+jacket|n.|áo khoác|A1
+January|n.|tháng Giêng|A1
+jeans|n.|quần jean|A1
+job|n.|công việc|A1
+join|v.|tham gia|A1
+juice|n.|nước ép|A1
+July|n.|tháng Bảy|A1
+June|n.|tháng Sáu|A1
+just|adv.|vừa mới, chỉ|A1
+keep|v.|giữ|A1
+key|n.|chìa khóa|A1
+kind (type)|n.|loại|A1
+kitchen|n.|nhà bếp|A1
+know|v.|biết|A1
+land|n.|đất, đất liền|A1
+language|n.|ngôn ngữ|A1
+large|adj.|rộng lớn|A1
+last (final)|det.|cuối cùng|A1
+late|adj.|muộn|A1
+later|adv.|sau, lát nữa, sau này|A1
+laugh|v.|cười|A1
+learn|v.|học|A1
+leave|v.|rời đi, để lại|A1
+left|adj.|bên trái|A1
+leg|n.|cái chân|A1
+lesson|n.|bài học|A1
+let|v.|để cho, cho phép|A1
+letter|n.|lá thư, chữ cái|A1
+library|n.|thư viện|A1
+lie|v.|nằm, nói dối|A1
+life|n.|cuộc sống|A1
+light (from the sun/a lamp)|n., adj.|ánh sáng|A1
+like (similar)|prep.|giống như|A1
+like (find sb/sth pleasant)|v.|thích|A1
+line|n.|đường kẻ, hàng|A1
+lion|n.|sư tử|A1
+list|n.|danh sách|A1
+listen|v.|lắng nghe|A1
+little|adj.|nhỏ bé|A1
+live|v.|sống, ở|A1
+local|adj.|địa phương|A1
+long|adj.|dài|A1
+look|v.|nhìn|A1
+lose|v.|mất, thua|A1
+lot|pron., det., adv.|nhiều, rất nhiều|A1
+love|n.|tình yêu|A1
+lunch|n.|bữa trưa|A1
+machine|n.|máy, máy móc|A1
+magazine|n.|tạp chí|A1
+main|adj.|chính|A1
+make|v.|làm, tạo ra|A1
+mall|n.|trung tâm thương mại|A1
+man|n.|người đàn ông|A1
+many|det.|nhiều|A1
+map|n.|bản đồ|A1
+March|n.|tháng Ba|A1
+market|n.|chợ|A1
+married|adj.|đã kết hôn|A1
+match (contest/correspond)|n., v.|trận đấu, khớp|A1
+May|n.|tháng Năm|A1
+maybe|adv.|có lẽ|A1
+me|pron.|tôi (tân ngữ)|A1
+meal|n.|bữa ăn|A1
+mean|v.|có nghĩa là|A1
+meaning|n.|ý nghĩa|A1
+meat|n.|thịt|A1
+meet|v.|gặp gỡ|A1
+meeting|n.|cuộc họp|A1
+member|n.|thành viên|A1
+menu|n.|thực đơn|A1
+message|n.|tin nhắn|A1
+meter|n.|mét|A1
+midnight|n.|nửa đêm|A1
+mile|n.|dặm|A1
+milk|n.|sữa|A1
+million|number|một triệu|A1
+minute|n.|phút|A1
+miss|v.|nhớ, bỏ lỡ|A1
+mistake|n.|lỗi sai|A1
+model|n.|người mẫu, mô hình|A1
+modern|adj.|hiện đại|A1
+mom|n.|mẹ|A1
+moment|n.|khoảnh khắc|A1
+Monday|n.|thứ Hai|A1
+money|n.|tiền|A1
+month|n.|tháng|A1
+more|det./pron., adv.|nhiều hơn|A1
+morning|n.|buổi sáng|A1
+most|det./pron., adv.|nhiều nhất|A1
+mother|n.|mẹ|A1
+mountain|n.|ngọn núi|A1
+mouse|n.|con chuột|A1
+mouth|n.|miệng|A1
+move|v.|di chuyển|A1
+movie|n.|bộ phim|A1
+much|det.|nhiều|A1
+museum|n.|bảo tàng|A1
+music|n.|âm nhạc|A1
+must|modal|phải|A1
+my|det.|của tôi|A1
+name|n.|tên|A1
+natural|adj.|tự nhiên|A1
+near|prep.|gần|A1
+need|v.|cần|A1
+negative|adj.|tiêu cực, âm|A1
+neighbor|n.|hàng xóm|A1
+neighborhood|n.|khu phố|A1
+never|adv.|không bao giờ|A1
+new|adj.|mới|A1
+news|n.|tin tức|A1
+newspaper|n.|tờ báo|A1
+next|adj.|tiếp theo|A1
+next to|prep.|bên cạnh|A1
+nice|adj.|tốt, dễ chịu, tử tế|A1
+night|n.|ban đêm|A1
+nine|number|chín|A1
+nineteen|number|mười chín|A1
+ninety|number|chín mươi|A1
+no|exclam.|không|A1
+nobody|pron.|không ai|A1
+no one|pron.|không ai|A1
+north|n.|phía bắc|A1
+nose|n.|cái mũi|A1
+not|adv.|không|A1
+note|n.|ghi chú|A1
+nothing|pron.|không có gì|A1
+November|n.|tháng Mười Một|A1
+now|adv.|bây giờ|A1
+number|n.|con số|A1
+nurse|n.|y tá|A1
+object|n.|vật thể|A1
+ocean|n.|đại dương|A1
+o’clock|adv.|giờ|A1
+October|n.|tháng Mười|A1
+of|prep.|của|A1
+off|adv., prep.|tắt, rời khỏi|A1
+office|n.|văn phòng|A1
+often|adv.|thường xuyên|A1
+oh|exclam.|ồ|A1
+OK|exclam., adj./adv.|được, ổn|A1
+old|adj.|cũ, già|A1
+on|prep., adv.|trên, bật|A1
+once|adv.|một lần|A1
+one|number|một|A1
+onion|n.|củ hành|A1
+online|adj., adv.|trực tuyến|A1
+only|adj., adv.|duy nhất, chỉ|A1
+open|v.|mở|A1
+opinion|n.|ý kiến|A1
+opposite|adj., adv., prep., n.|đối diện, trái ngược|A1
+or|conj.|hoặc|A1
+orange|n.|quả cam|A1
+order|v.|gọi món, ra lệnh|A1
+other|adj.|khác|A1
+our|det.|của chúng tôi|A1
+out|adv./prep.|ra ngoài|A1
+outside|adv.|bên ngoài|A1
+over|prep., adv.|trên, qua, hết|A1
+own|adj./pron.|của riêng mình|A1
+page|n.|trang|A1
+paint|v.|sơn, vẽ|A1
+painting|n.|bức tranh, tranh vẽ|A1
+pair|n.|một cặp|A1
+pants|n.|quần dài|A1
+paper|n.|giấy|A1
+paragraph|n.|đoạn văn|A1
+parent|n.|cha mẹ|A1
+park|n.|công viên|A1
+part|n.|phần|A1
+partner|n.|đối tác, bạn đời|A1
+party|n.|bữa tiệc|A1
+passport|n.|hộ chiếu|A1
+past|adj., n., prep.|quá khứ, qua, quá|A1
+pay|v.|trả tiền|A1
+pen|n.|cái bút|A1
+pencil|n.|bút chì|A1
+people|n.|người, mọi người|A1
+pepper|n.|hạt tiêu|A1
+perfect|adj.|hoàn hảo|A1
+period|n.|giai đoạn|A1
+person|n.|người, cá nhân|A1
+personal|adj.|cá nhân|A1
+phone|n.|điện thoại|A1
+photo|n.|bức ảnh|A1
+photograph|n.|bức ảnh|A1
+phrase|n.|cụm từ|A1
+piano|n.|đàn piano|A1
+picture|n.|bức tranh, hình ảnh|A1
+piece|n.|mảnh, miếng|A1
+pig|n.|con heo|A1
+pink|adj.|màu hồng|A1
+pizza|n.|bánh pizza|A1
+place|n.|địa điểm|A1
+plan|n.|kế hoạch|A1
+plane|n.|máy bay|A1
+plant|n.|cây, thực vật|A1
+play|v.|chơi|A1
+player|n.|người chơi|A1
+please|exclam.|làm ơn|A1
+point|n.|điểm, ý chính|A1
+police|n.|cảnh sát|A1
+pool|n.|hồ bơi|A1
+poor|adj.|nghèo|A1
+popular|adj.|phổ biến|A1
+positive|adj.|tích cực, dương|A1
+possible|adj.|có thể|A1
+post|n., v.|bài đăng, đăng|A1
+potato|n.|khoai tây|A1
+pound|n.|bảng Anh, pao|A1
+practice|n.|luyện tập|A1
+prefer|v.|thích hơn|A1
+prepare|v.|chuẩn bị|A1
+present|adj., n.|hiện tại, món quà|A1
+pretty|adj., adv.|xinh, khá|A1
+price|n.|giá|A1
+probably|adv.|có lẽ|A1
+problem|n.|vấn đề|A1
+product|n.|sản phẩm|A1
+program|n.|chương trình|A1
+project|n.|dự án|A1
+purple|adj.|màu tím|A1
+put|v.|đặt, để|A1
+quarter|n.|một phần tư|A1
+question|n.|câu hỏi|A1
+quick|adj.|nhanh|A1
+quickly|adv.|nhanh, nhanh chóng|A1
+quiet|adj.|yên tĩnh|A1
+quite|adv.|khá|A1
+radio|n.|đài phát thanh|A1
+rain|n.|mưa|A1
+read|v.|đọc|A1
+reader|n.|người đọc|A1
+reading|n.|việc đọc|A1
+ready|adj.|sẵn sàng|A1
+real|adj.|thật|A1
+really|adv.|thực sự|A1
+reason|n.|lý do|A1
+red|adj.|màu đỏ|A1
+relax|v.|thư giãn|A1
+remember|v.|nhớ|A1
+repeat|v.|lặp lại|A1
+report|n.|báo cáo|A1
+restaurant|n.|nhà hàng|A1
+result|n.|kết quả|A1
+return|v., n.|trở lại, trả lại|A1
+rice|n.|cơm, gạo|A1
+rich|adj.|giàu có|A1
+ride|v.|đi (xe đạp, xe máy), cưỡi|A1
+right|adj.|đúng, bên phải|A1
+river|n.|dòng sông|A1
+road|n.|con đường|A1
+room|n.|căn phòng|A1
+routine|n.|thói quen hằng ngày|A1
+rule|n.|quy tắc|A1
+run|v.|chạy|A1
+sad|adj.|buồn|A1
+salad|n.|món salad|A1
+salt|n.|muối|A1
+same|adj.|giống nhau|A1
+sandwich|n.|bánh mì kẹp|A1
+Saturday|n.|thứ Bảy|A1
+say|v.|nói|A1
+school|n.|trường học|A1
+science|n.|khoa học|A1
+scientist|n.|nhà khoa học|A1
+second (next after the first)|det./ number|thứ hai|A1
+second (unit of time)|n.|giây|A1
+section|n.|phần, mục|A1
+see|v.|nhìn thấy|A1
+sell|v.|bán|A1
+send|v.|gửi|A1
+sentence|n.|câu|A1
+September|n.|tháng Chín|A1
+seven|number|bảy|A1
+seventeen|number|mười bảy|A1
+seventy|number|bảy mươi|A1
+share|v.|chia sẻ|A1
+she|pron.|cô ấy|A1
+sheep|n.|con cừu|A1
+shirt|n.|áo sơ mi|A1
+shoe|n.|chiếc giày|A1
+shop|n.|cửa hàng|A1
+shopping|n.|việc mua sắm|A1
+short|adj.|ngắn, thấp|A1
+should|modal|nên|A1
+show|v.|cho xem|A1
+shower|n.|việc tắm vòi sen, vòi hoa sen|A1
+sick|adj.|ốm|A1
+similar|adj.|tương tự|A1
+sing|v.|hát|A1
+singer|n.|ca sĩ|A1
+sister|n.|chị / em gái|A1
+sit|v.|ngồi|A1
+situation|n.|tình huống|A1
+six|number|sáu|A1
+sixteen|number|mười sáu|A1
+sixty|number|sáu mươi|A1
+skill|n.|kỹ năng|A1
+skirt|n.|chân váy|A1
+sleep|v.|ngủ|A1
+slow|adj.|chậm|A1
+small|adj.|nhỏ|A1
+smart|adj.|thông minh|A1
+snake|n.|con rắn|A1
+snow|n.|tuyết|A1
+so|adv.|vì vậy, rất|A1
+some|det.|một vài|A1
+somebody|pron.|ai đó|A1
+someone|pron.|ai đó|A1
+something|pron.|điều gì đó|A1
+sometimes|adv.|thỉnh thoảng|A1
+son|n.|con trai|A1
+song|n.|bài hát|A1
+soon|adv.|sớm|A1
+sorry|adj.|xin lỗi|A1
+sound|n., v.|âm thanh, nghe có vẻ|A1
+soup|n.|món súp|A1
+south|n.|phía nam|A1
+space|n.|không gian|A1
+speak|v.|nói|A1
+special|adj.|đặc biệt|A1
+spell|v.|đánh vần|A1
+spelling|n.|chính tả|A1
+spend|v.|tiêu, dành|A1
+sport|n.|thể thao|A1
+spring|n.|mùa xuân|A1
+stand|v.|đứng|A1
+star|n.|ngôi sao|A1
+start|v.|bắt đầu|A1
+statement|n.|lời tuyên bố|A1
+station|n.|nhà ga|A1
+stay|v.|ở lại|A1
+still|adv.|vẫn|A1
+stop|v.|dừng lại|A1
+store|n.|cửa hàng|A1
+story|n.|câu chuyện|A1
+street|n.|đường phố|A1
+strong|adj.|mạnh mẽ|A1
+student|n.|học sinh, sinh viên|A1
+study|v.|học tập|A1
+style|n.|phong cách|A1
+subject|n.|chủ đề, môn học|A1
+success|n.|thành công|A1
+sugar|n.|đường|A1
+summer|n.|mùa hè|A1
+sun|n.|mặt trời|A1
+Sunday|n.|Chủ nhật|A1
+sunny|adj.|có nắng|A1
+supermarket|n.|siêu thị|A1
+sure|adj.|chắc chắn|A1
+sweater|n.|áo len|A1
+swim|v.|bơi|A1
+swimming|n.|môn bơi|A1
+table|n.|cái bàn|A1
+take|v.|lấy, mang|A1
+talk|v.|nói chuyện|A1
+tall|adj.|cao|A1
+taxi|n.|xe taxi|A1
+tea|n.|trà|A1
+teach|v.|dạy|A1
+teacher|n.|giáo viên|A1
+team|n.|đội, nhóm|A1
+teenager|n.|thiếu niên|A1
+telephone|n., v.|điện thoại|A1
+television|n.|ti vi|A1
+tell|v.|kể, bảo|A1
+ten|number|mười|A1
+tennis|n.|quần vợt|A1
+terrible|adj.|tồi tệ|A1
+test|n.|bài kiểm tra|A1
+text|n.|văn bản, tin nhắn|A1
+than|conj.|hơn|A1
+thank|v.|cảm ơn|A1
+thanks|exclam.|cảm ơn|A1
+that|det., pron., conj.|đó, rằng|A1
+the|article|(mạo từ xác định)|A1
+theater|n.|nhà hát, rạp|A1
+their|det.|của họ|A1
+them|pron.|họ (tân ngữ)|A1
+then|adv.|sau đó|A1
+there|adv.|ở đó|A1
+they|pron.|họ|A1
+thing|n.|đồ vật, điều|A1
+think|v.|nghĩ|A1
+third|number|thứ ba|A1
+thirsty|adj.|khát|A1
+thirteen|number|mười ba|A1
+thirty|number|ba mươi|A1
+this|det./pron.|này|A1
+thousand|number|một nghìn|A1
+three|number|ba|A1
+through|prep., adv.|xuyên qua|A1
+Thursday|n.|thứ Năm|A1
+ticket|n.|vé|A1
+time|n.|thời gian|A1
+tired|adj.|mệt mỏi|A1
+title|n.|tiêu đề|A1
+to|prep., inf.|đến, để|A1
+today|adv.|hôm nay|A1
+together|adv.|cùng nhau|A1
+toilet|n.|nhà vệ sinh|A1
+tomato|n.|quả cà chua|A1
+tomorrow|adv.|ngày mai|A1
+tonight|adv.|tối nay|A1
+too|adv.|cũng, quá|A1
+tooth|n.|cái răng|A1
+topic|n.|chủ đề|A1
+tourist|n.|khách du lịch|A1
+town|n.|thị trấn|A1
+traffic|n.|giao thông|A1
+train|n.|tàu hỏa|A1
+travel|v.|đi du lịch|A1
+tree|n.|cái cây|A1
+trip|n.|chuyến đi|A1
+truck|n.|xe tải|A1
+true|adj.|đúng, thật|A1
+try|v.|thử, cố gắng|A1
+T-shirt|n.|áo phông|A1
+Tuesday|n.|thứ Ba|A1
+turn|v.|rẽ, xoay|A1
+TV|n.|ti vi|A1
+twelve|number|mười hai|A1
+twenty|number|hai mươi|A1
+twice|adv.|hai lần|A1
+two|number|hai|A1
+type|n.|loại|A1
+umbrella|n.|cái ô|A1
+uncle|n.|chú, bác, cậu|A1
+under|prep., adv.|dưới|A1
+understand|v.|hiểu|A1
+university|n.|trường đại học|A1
+until|conj./prep.|cho đến khi|A1
+up|adv., prep.|lên|A1
+upstairs|adv.|ở tầng trên|A1
+us|pron.|chúng tôi (tân ngữ)|A1
+use|v.|sử dụng|A1
+useful|adj.|hữu ích|A1
+usually|adv.|thường, thường xuyên|A1
+vacation|n.|kỳ nghỉ|A1
+vegetable|n.|rau củ|A1
+very|adv.|rất|A1
+video|n.|video|A1
+visit|v.|thăm, tham quan|A1
+visitor|n.|khách tham quan|A1
+wait|v.|chờ đợi|A1
+waiter|n.|người phục vụ nam|A1
+wake|v.|thức dậy|A1
+walk|v.|đi bộ|A1
+wall|n.|bức tường|A1
+want|v.|muốn|A1
+warm|adj.|ấm áp|A1
+wash|v.|rửa|A1
+watch|v.|xem|A1
+water|n.|nước|A1
+way|n.|cách, con đường|A1
+we|pron.|chúng tôi|A1
+wear|v.|mặc, đội|A1
+weather|n.|thời tiết|A1
+website|n.|trang web|A1
+Wednesday|n.|thứ Tư|A1
+week|n.|tuần|A1
+weekend|n.|cuối tuần|A1
+welcome|exclam.|chào mừng|A1
+well|adv.|tốt|A1
+west|n.|phía tây|A1
+what|pron.|cái gì|A1
+when|adv.|khi nào|A1
+where|adv.|ở đâu|A1
+which|pron./det.|cái nào|A1
+white|adj.|màu trắng|A1
+who|pron.|ai|A1
+why|adv.|tại sao|A1
+wife|n.|vợ|A1
+will|modal|sẽ|A1
+win|v.|thắng|A1
+window|n.|cửa sổ|A1
+wine|n.|rượu vang|A1
+winter|n.|mùa đông|A1
+with|prep.|với, cùng|A1
+without|prep.|không có|A1
+woman|n.|người phụ nữ|A1
+wonderful|adj.|tuyệt vời, tuyệt diệu|A1
+word|n.|từ|A1
+work|v.|làm việc|A1
+worker|n.|công nhân|A1
+world|n.|thế giới|A1
+would|modal|sẽ (giả định)|A1
+write|v.|viết|A1
+writer|n.|nhà văn|A1
+writing|n.|việc viết|A1
+wrong|adj.|sai|A1
+yard|n.|sân|A1
+yeah|exclam.|ừ, vâng|A1
+year|n.|năm|A1
+yellow|adj.|màu vàng|A1
+yes|exclam.|vâng, có|A1
+yesterday|adv.|hôm qua|A1
+you|pron.|bạn|A1
+young|adj.|trẻ|A1
+your|det.|của bạn|A1
+yourself|pron.|chính bạn|A1
+ability|n.|khả năng|A2
+able|adj.|có thể, có khả năng|A2
+accept|v.|chấp nhận|A2
+accident|n.|tai nạn|A2
+according to|prep.|theo|A2
+achieve|v.|đạt được|A2
+act|v.|hành động, diễn|A2
+active|adj.|năng động|A2
+actually|adv.|thật ra|A2
+advantage|n.|lợi thế|A2
+adventure|n.|cuộc phiêu lưu|A2
+advertise|v.|quảng cáo|A2
+advertisement|n.|mẩu quảng cáo|A2
+advertising|n.|ngành quảng cáo|A2
+affect|v.|ảnh hưởng đến|A2
+against|prep.|chống lại|A2
+ah|exclam.|à|A2
+airline|n.|hãng hàng không|A2
+alive|adj.|còn sống|A2
+all right|adj./adv.|ổn, được thôi|A2
+allow|v.|cho phép|A2
+almost|adv.|gần như|A2
+alone|adj./adv.|một mình|A2
+along|prep., adv.|dọc theo|A2
+already|adv.|đã, rồi|A2
+alternative|n.|sự lựa chọn khác|A2
+although|conj.|mặc dù|A2
+among|prep.|giữa, trong số|A2
+amount|n.|số lượng|A2
+analyze|v.|phân tích|A2
+ancient|adj.|cổ đại|A2
+ankle|n.|mắt cá chân|A2
+anybody|pron.|bất kỳ ai|A2
+anymore|adv.|không còn nữa|A2
+anyway|adv.|dù sao đi nữa|A2
+anywhere|adv., pron.|bất cứ nơi đâu|A2
+app|n.|ứng dụng|A2
+appear|v.|xuất hiện|A2
+appearance|n.|vẻ ngoài|A2
+apply|v.|nộp đơn, áp dụng|A2
+architect|n.|kiến trúc sư|A2
+architecture|n.|kiến trúc|A2
+argue|v.|tranh cãi|A2
+argument|n.|cuộc tranh luận|A2
+army|n.|quân đội|A2
+arrange|v.|sắp xếp|A2
+arrangement|n.|sự sắp xếp|A2
+asleep|adj.|đang ngủ|A2
+assistant|n., adj.|trợ lý|A2
+athlete|n.|vận động viên|A2
+attack|n., v.|tấn công|A2
+attend|v.|tham dự|A2
+attention|n.|sự chú ý|A2
+attractive|adj.|hấp dẫn|A2
+audience|n.|khán giả|A2
+audio|adj., n.|âm thanh|A2
+author|n.|tác giả|A2
+available|adj.|có sẵn, rảnh|A2
+average|adj., n.|trung bình|A2
+avoid|v.|tránh|A2
+award|n.|giải thưởng|A2
+awful|adj.|tồi tệ|A2
+background|n.|bối cảnh, nền|A2
+badly|adv.|tệ, nặng|A2
+based|adj.|dựa trên|A2
+bean|n.|hạt đậu|A2
+bear (animal)|n.|con gấu|A2
+beef|n.|thịt bò|A2
+behave|v.|cư xử|A2
+behavior|n.|hành vi|A2
+belong|v.|thuộc về|A2
+belt|n.|thắt lưng|A2
+benefit|n.|lợi ích|A2
+billion|number|một tỷ|A2
+biology|n.|sinh học|A2
+birth|n.|sự ra đời|A2
+bit|n.|một chút|A2
+block|n.|khối, tòa nhà|A2
+blood|n.|máu|A2
+blow|v.|thổi|A2
+board|n.|bảng, tấm ván|A2
+boil|v.|đun sôi|A2
+bone|n.|xương|A2
+borrow|v.|mượn|A2
+boss|n.|ông chủ, sếp|A2
+bottom|n., adj.|đáy, phía dưới|A2
+bowl|n.|cái bát|A2
+brain|n.|bộ não|A2
+bridge|n.|cây cầu|A2
+bright|adj.|sáng|A2
+brilliant|adj.|xuất sắc, rực rỡ|A2
+broken|adj.|bị hỏng, bị vỡ|A2
+brush|v., n.|chải, bàn chải|A2
+burn|v.|đốt cháy, bị bỏng|A2
+businessman|n.|doanh nhân|A2
+button|n.|nút, cúc áo|A2
+camp|n., v.|trại, cắm trại|A2
+camping|n.|việc cắm trại|A2
+campus|n.|khuôn viên trường|A2
+can (n.)|n.|cái lon, hộp thiếc|A2
+candy|n.|kẹo|A2
+care|n., v.|sự chăm sóc, quan tâm|A2
+careful|adj.|cẩn thận|A2
+carefully|adv.|một cách cẩn thận|A2
+carpet|n.|thảm|A2
+cartoon|n.|phim hoạt hình|A2
+case|n.|trường hợp, cái hộp|A2
+cash|n.|tiền mặt|A2
+catch|v.|bắt, đón|A2
+cause|n., v.|nguyên nhân, gây ra|A2
+celebrate|v.|ăn mừng|A2
+celebrity|n.|người nổi tiếng|A2
+cell|n.|tế bào, ô|A2
+century|n.|thế kỷ|A2
+certain|adj.|chắc chắn|A2
+certainly|adv.|chắc chắn rồi|A2
+chance|n.|cơ hội|A2
+character|n.|nhân vật, tính cách|A2
+charity|n.|tổ chức từ thiện|A2
+chat|v., n.|trò chuyện|A2
+chef|n.|đầu bếp|A2
+chemistry|n.|hóa học|A2
+chip|n.|khoai tây chiên, vi mạch|A2
+choice|n.|sự lựa chọn|A2
+church|n.|nhà thờ|A2
+cigarette|n.|điếu thuốc lá|A2
+circle|n., v.|vòng tròn, khoanh tròn|A2
+classical|adj.|cổ điển|A2
+clear|adj.|rõ ràng|A2
+clearly|adv.|một cách rõ ràng|A2
+clerk|n.|nhân viên văn phòng, nhân viên bán hàng|A2
+climate|n.|khí hậu|A2
+close (adj.)|adj.|gần|A2
+closed|adj.|đã đóng cửa|A2
+closet|n.|tủ quần áo|A2
+clothing|n.|quần áo|A2
+cloud|n.|đám mây|A2
+coach|n., v.|huấn luyện viên|A2
+coast|n.|bờ biển|A2
+code|n.|mã, mật mã|A2
+colleague|n.|đồng nghiệp|A2
+collect|v.|thu thập, sưu tầm|A2
+column|n.|cột|A2
+comedy|n.|phim hài, hài kịch|A2
+comfortable|adj.|thoải mái|A2
+comment|n.|bình luận|A2
+communicate|v.|giao tiếp|A2
+community|n.|cộng đồng|A2
+compete|v.|cạnh tranh, thi đấu|A2
+competition|n.|cuộc thi|A2
+complain|v.|phàn nàn|A2
+completely|adv.|hoàn toàn|A2
+condition|n.|điều kiện, tình trạng|A2
+conference|n.|hội nghị|A2
+connect|v.|kết nối|A2
+connected|adj.|được kết nối|A2
+consider|v.|cân nhắc|A2
+contain|v.|chứa đựng|A2
+context|n.|ngữ cảnh|A2
+continent|n.|châu lục|A2
+continue|v.|tiếp tục|A2
+control|n., v.|kiểm soát|A2
+cookie|n.|bánh quy|A2
+copy|n., v.|bản sao, sao chép|A2
+corn|n.|ngô, bắp|A2
+corner|n.|góc|A2
+correctly|adv.|một cách chính xác|A2
+count|v.|đếm|A2
+couple|n.|cặp đôi|A2
+cover|v.|che phủ, bao phủ|A2
+crazy|adj.|điên rồ|A2
+creative|adj.|sáng tạo|A2
+credit|n.|tín dụng|A2
+crime|n.|tội ác, hành vi phạm tội|A2
+criminal|n.|tội phạm, kẻ phạm tội|A2
+cross|v., n.|băng qua, chữ thập|A2
+crowd|n.|đám đông|A2
+crowded|adj.|đông đúc|A2
+cry|v.|khóc|A2
+curly|adj.|xoăn|A2
+cycle|n., v.|chu kỳ, đạp xe|A2
+daily|adj.|hằng ngày|A2
+danger|n.|nguy hiểm|A2
+data|n.|dữ liệu|A2
+dead|adj.|đã chết|A2
+deal|v.|giải quyết, xử lý|A2
+death|n.|cái chết|A2
+decision|n.|quyết định|A2
+deep|adj.|sâu|A2
+definitely|adv.|chắc chắn|A2
+degree|n.|bằng cấp, độ|A2
+dentist|n.|nha sĩ|A2
+department|n.|phòng ban, khoa|A2
+depend|v.|phụ thuộc|A2
+desert|n.|sa mạc|A2
+designer|n.|nhà thiết kế|A2
+dessert|n.|món tráng miệng|A2
+destroy|v.|phá hủy|A2
+detective|n.|thám tử|A2
+develop|v.|phát triển|A2
+device|n.|thiết bị|A2
+diary|n.|nhật ký|A2
+differently|adv.|một cách khác|A2
+digital|adj.|kỹ thuật số|A2
+direct|adj.|trực tiếp|A2
+direction|n.|phương hướng|A2
+director|n.|giám đốc, đạo diễn|A2
+disagree|v.|không đồng ý|A2
+disappear|v.|biến mất|A2
+disaster|n.|thảm họa|A2
+discover|v.|khám phá|A2
+discovery|n.|sự khám phá|A2
+discussion|n.|cuộc thảo luận|A2
+disease|n.|bệnh tật|A2
+distance|n.|khoảng cách|A2
+divorced|adj.|đã ly hôn|A2
+document|n.|tài liệu|A2
+double|adj., det., pron., v.|gấp đôi|A2
+download|v., n.|tải xuống|A2
+downtown|adv., n., adj.|trung tâm thành phố|A2
+drama|n.|kịch, phim truyền hình|A2
+drawing|n.|bức vẽ|A2
+dream|n., v.|giấc mơ|A2
+driving|n.|việc lái xe|A2
+drop|v.|rơi, thả|A2
+drug|n.|thuốc, ma túy|A2
+dry|adj., v.|khô|A2
+earn|v.|kiếm được|A2
+earth|n.|trái đất|A2
+easily|adv.|dễ dàng|A2
+education|n.|giáo dục|A2
+effect|n.|tác động|A2
+either|det./pron., adv.|một trong hai, cũng không|A2
+electric|adj.|chạy bằng điện|A2
+electrical|adj.|thuộc về điện|A2
+electricity|n.|điện|A2
+electronic|adj.|điện tử|A2
+elevator|n.|thang máy|A2
+employ|v.|thuê, tuyển dụng|A2
+employee|n.|nhân viên|A2
+employer|n.|người sử dụng lao động|A2
+empty|adj.|trống rỗng|A2
+ending|n.|phần kết|A2
+energy|n.|năng lượng|A2
+engine|n.|động cơ|A2
+engineer|n.|kỹ sư|A2
+enormous|adj.|khổng lồ|A2
+enter|v.|đi vào, nhập|A2
+environment|n.|môi trường|A2
+equipment|n.|trang thiết bị, dụng cụ|A2
+error|n.|lỗi|A2
+especially|adv.|đặc biệt là|A2
+essay|n.|bài luận|A2
+everyday|adj.|hằng ngày|A2
+everywhere|adv.|khắp nơi|A2
+evidence|n.|bằng chứng|A2
+exact|adj.|chính xác|A2
+exactly|adv.|chính xác|A2
+excellent|adj.|xuất sắc|A2
+except|prep.|ngoại trừ|A2
+exist|v.|tồn tại|A2
+expect|v.|mong đợi|A2
+experience|n.|kinh nghiệm, trải nghiệm|A2
+experiment|n.|thí nghiệm|A2
+expert|n., adj.|chuyên gia|A2
+explanation|n.|lời giải thích|A2
+express|v.|bày tỏ|A2
+expression|n.|biểu cảm, cách diễn đạt|A2
+extreme|adj.|cực độ|A2
+extremely|adv.|cực kỳ|A2
+factor|n.|yếu tố|A2
+factory|n.|nhà máy|A2
+fail|v.|thất bại, trượt|A2
+fair|adj.|công bằng|A2
+fan|n.|người hâm mộ, cái quạt|A2
+farming|n.|nghề nông|A2
+fashion|n.|thời trang|A2
+fear|n.|nỗi sợ|A2
+feature|n.|đặc điểm, tính năng|A2
+feed|v.|cho ăn|A2
+female|adj., n.|nữ, giống cái|A2
+fever|n.|cơn sốt|A2
+fiction|n.|tiểu thuyết, truyện hư cấu|A2
+field|n.|cánh đồng, lĩnh vực|A2
+fight|v., n.|đánh nhau, cuộc chiến|A2
+figure|n.|con số, hình dáng|A2
+film|n.|bộ phim|A2
+finally|adv.|cuối cùng|A2
+finger|n.|ngón tay|A2
+fishing|n.|việc câu cá|A2
+fit|v., adj.|vừa vặn, khỏe mạnh|A2
+fix|v.|sửa chữa|A2
+flat|adj.|phẳng, bằng phẳng|A2
+flu|n.|bệnh cúm|A2
+flying|n., adj.|việc bay|A2
+focus|v., n.|tập trung|A2
+following|adj.|tiếp theo|A2
+foreign|adj.|nước ngoài|A2
+forest|n.|khu rừng|A2
+fork|n.|cái nĩa|A2
+formal|adj.|trang trọng|A2
+fortunately|adv.|may mắn thay|A2
+forward|adv.|về phía trước|A2
+fresh|adj.|tươi|A2
+frog|n.|con ếch|A2
+furniture|n.|đồ nội thất|A2
+further|adj.|xa hơn|A2
+gallery|n.|phòng trưng bày|A2
+gap|n.|khoảng trống|A2
+garbage|n.|rác|A2
+gas|n.|khí ga, xăng|A2
+gate|n.|cổng|A2
+general|adj.|chung, tổng quát|A2
+gift|n.|món quà|A2
+goal|n.|mục tiêu, bàn thắng|A2
+god|n.|thần, Chúa|A2
+gold|n., adj.|vàng|A2
+golf|n.|môn golf|A2
+government|n.|chính phủ|A2
+grass|n.|cỏ|A2
+greet|v.|chào hỏi|A2
+grocery|n.|cửa hàng tạp hóa|A2
+ground|n.|mặt đất|A2
+guest|n.|khách mời|A2
+guide|n., v.|hướng dẫn, người hướng dẫn|A2
+gun|n.|khẩu súng|A2
+guy|n.|anh chàng|A2
+habit|n.|thói quen|A2
+hall|n.|hành lang, hội trường|A2
+happily|adv.|một cách vui vẻ|A2
+headache|n.|đau đầu|A2
+heart|n.|trái tim|A2
+heat|n., v.|nhiệt, sức nóng|A2
+heavy|adj.|nặng|A2
+height|n.|chiều cao|A2
+helpful|adj.|hữu ích|A2
+hero|n.|anh hùng|A2
+hers|pron.|của cô ấy|A2
+herself|pron.|chính cô ấy|A2
+hide|v.|trốn, giấu|A2
+hike|n., v.|đi bộ đường dài|A2
+hill|n.|ngọn đồi|A2
+himself|pron.|chính anh ấy|A2
+hit|v., n.|đánh, va vào|A2
+hockey|n.|khúc côn cầu|A2
+hold|v.|cầm, giữ|A2
+hole|n.|cái lỗ|A2
+holiday|n.|kỳ nghỉ, ngày lễ|A2
+huge|adj.|to lớn|A2
+human|adj., n.|con người|A2
+hurt|v., adj.|làm đau, bị đau|A2
+ideal|adj.|lý tưởng|A2
+identify|v.|nhận ra, xác định|A2
+ill|adj.|ốm|A2
+illness|n.|bệnh|A2
+image|n.|hình ảnh|A2
+immediately|adv.|ngay lập tức|A2
+impossible|adj.|không thể|A2
+included|adj.|được bao gồm|A2
+including|prep.|bao gồm|A2
+increase|v., n.|tăng|A2
+incredible|adj.|đáng kinh ngạc|A2
+independent|adj.|độc lập|A2
+individual|n., adj.|cá nhân|A2
+industry|n.|ngành công nghiệp|A2
+informal|adj.|thân mật|A2
+injury|n.|chấn thương|A2
+insect|n.|côn trùng|A2
+inside|prep., adv., n., adj.|bên trong|A2
+instead|adv.|thay vào đó|A2
+instead of|prep.|thay vì|A2
+instruction|n.|hướng dẫn|A2
+instructor|n.|giảng viên, huấn luyện viên|A2
+instrument|n.|nhạc cụ, dụng cụ|A2
+intelligent|adj.|thông minh|A2
+international|adj.|quốc tế|A2
+introduction|n.|phần giới thiệu|A2
+invent|v.|phát minh|A2
+invention|n.|phát minh|A2
+invitation|n.|lời mời|A2
+invite|v.|mời|A2
+involve|v.|liên quan đến|A2
+item|n.|món đồ, mục|A2
+itself|pron.|chính nó|A2
+jam|n.|mứt, kẹt xe|A2
+jazz|n.|nhạc jazz|A2
+jewelry|n.|đồ trang sức|A2
+joke|n., v.|trò đùa, chuyện cười, đùa|A2
+journalist|n.|nhà báo|A2
+jump|v., n.|nhảy|A2
+kid|n.|đứa trẻ|A2
+kill|v.|giết|A2
+kilometer|n.|ki-lô-mét|A2
+king|n.|vua|A2
+knee|n.|đầu gối|A2
+knife|n.|con dao|A2
+knock|v.|gõ cửa|A2
+knowledge|n.|kiến thức|A2
+lab|n.|phòng thí nghiệm|A2
+lady|n.|quý bà|A2
+lake|n.|hồ|A2
+lamp|n.|đèn|A2
+laptop|n.|máy tính xách tay|A2
+last (taking time)|v.|kéo dài|A2
+laughter|n.|tiếng cười|A2
+law|n.|luật|A2
+lawyer|n.|luật sư|A2
+lazy|adj.|lười biếng|A2
+lead|v.|dẫn dắt|A2
+leader|n.|người lãnh đạo|A2
+learning|n.|việc học|A2
+least|det./pron., adv.|ít nhất|A2
+lecture|n., v.|bài giảng|A2
+lemon|n.|quả chanh vàng|A2
+lend|v.|cho mượn|A2
+less|det./pron., adv.|ít hơn|A2
+level|n.|cấp độ|A2
+lifestyle|n.|lối sống|A2
+lift|v.|nâng lên|A2
+light (not heavy)|adj.|nhẹ|A2
+likely|adj.|có khả năng|A2
+link|n., v.|liên kết|A2
+listener|n.|người nghe|A2
+lock|v., n.|khóa|A2
+lost|adj.|bị lạc, bị mất|A2
+loud|adj., adv.|ồn ào, to|A2
+loudly|adv.|một cách ồn ào|A2
+low|adj., adv.|thấp|A2
+luck|n.|may mắn|A2
+lucky|adj.|may mắn, gặp may|A2
+mail|n., v.|thư|A2
+major|adj.|chính, chủ yếu|A2
+male|adj., n.|nam, giống đực|A2
+manage|v.|quản lý, xoay xở|A2
+manager|n.|quản lý|A2
+manner|n.|cách, cách cư xử|A2
+mark|v., n.|dấu, điểm số, đánh dấu|A2
+marry|v.|kết hôn|A2
+material|n.|vật liệu, tài liệu|A2
+math|n.|môn toán|A2
+mathematics|n.|toán học|A2
+matter|n., v.|vấn đề, quan trọng|A2
+may (modal)|modal|có thể (xin phép, khả năng)|A2
+mayor|n.|thị trưởng|A2
+media|n.|truyền thông|A2
+medical|adj.|thuộc y tế|A2
+medicine|n.|thuốc, y học|A2
+memory|n.|trí nhớ, ký ức|A2
+mention|v.|đề cập|A2
+metal|n.|kim loại|A2
+method|n.|phương pháp|A2
+middle|n., adj.|ở giữa|A2
+might|modal|có thể|A2
+mind|n., v.|tâm trí, phiền, để ý|A2
+mine (belongs to me)|pron.|của tôi|A2
+mirror|n.|cái gương|A2
+missing|adj.|bị thiếu, mất tích|A2
+monkey|n.|con khỉ|A2
+moon|n.|mặt trăng|A2
+mostly|adv.|chủ yếu|A2
+motorcycle|n.|xe máy|A2
+movement|n.|sự chuyển động, phong trào|A2
+musical|adj.|thuộc âm nhạc|A2
+musician|n.|nhạc sĩ, nhạc công|A2
+myself|pron.|chính tôi|A2
+narrow|adj.|hẹp|A2
+national|adj.|quốc gia|A2
+nature|n.|thiên nhiên|A2
+nearly|adv.|gần như|A2
+necessary|adj.|cần thiết|A2
+neck|n.|cái cổ|A2
+neither|det./pron.|không cái nào|A2
+nervous|adj.|lo lắng|A2
+network|n.|mạng lưới|A2
+noise|n.|tiếng ồn|A2
+noisy|adj.|ồn ào|A2
+none|pron.|không ai, không cái nào|A2
+normal|adj.|bình thường|A2
+normally|adv.|thông thường|A2
+notice|v., n.|nhận thấy|A2
+novel|n.|tiểu thuyết|A2
+nowhere|adv.|không nơi nào|A2
+nut|n.|hạt, quả hạch|A2
+offer|v., n.|đề nghị|A2
+officer|n.|sĩ quan, cán bộ|A2
+oil|n.|dầu|A2
+onto|prep.|lên trên|A2
+opportunity|n.|cơ hội|A2
+option|n.|lựa chọn|A2
+ordinary|adj.|bình thường|A2
+organization|n.|tổ chức|A2
+organize|v.|tổ chức, sắp xếp|A2
+original|adj.|nguyên bản|A2
+ourselves|pron.|chính chúng tôi|A2
+oven|n.|lò nướng|A2
+overseas|adv.|ở nước ngoài|A2
+owner|n.|chủ sở hữu|A2
+pack|v.|đóng gói|A2
+pain|n.|cơn đau|A2
+painter|n.|họa sĩ|A2
+palace|n.|cung điện|A2
+parking|n.|việc đỗ xe|A2
+particular|adj.|cụ thể, đặc biệt|A2
+pass|v.|vượt qua, đưa|A2
+passenger|n.|hành khách|A2
+patient|n.|bệnh nhân|A2
+pattern|n.|họa tiết, mẫu|A2
+peace|n.|hòa bình|A2
+penny|n.|đồng xu penny|A2
+per|prep.|mỗi|A2
+percent|noun., adj./adv.|phần trăm|A2
+perform|v.|biểu diễn, thực hiện|A2
+perhaps|adv.|có lẽ|A2
+permission|n.|sự cho phép|A2
+personality|n.|tính cách|A2
+pet|n.|thú cưng|A2
+physical|adj.|thuộc thể chất|A2
+physics|n.|vật lý|A2
+pick|v.|chọn, hái|A2
+pilot|n.|phi công|A2
+planet|n.|hành tinh|A2
+plastic|n., adj.|nhựa|A2
+plate|n.|cái đĩa|A2
+platform|n.|sân ga, nền tảng|A2
+pleased|adj.|hài lòng|A2
+pocket|n.|túi (áo, quần)|A2
+polite|adj.|lịch sự|A2
+pollution|n.|ô nhiễm|A2
+pop|n., adj.|nhạc pop|A2
+population|n.|dân số|A2
+position|n.|vị trí|A2
+possession|n.|tài sản, sự sở hữu|A2
+possibility|n.|khả năng|A2
+poster|n.|áp phích|A2
+power|n.|sức mạnh, quyền lực|A2
+predict|v.|dự đoán|A2
+president|n.|tổng thống, chủ tịch|A2
+prevent|v.|ngăn chặn|A2
+print|v.|in|A2
+printer|n.|máy in|A2
+prison|n.|nhà tù|A2
+prize|n.|giải thưởng|A2
+process|n.|quá trình|A2
+produce|v.|sản xuất|A2
+professional|adj.|chuyên nghiệp|A2
+professor|n.|giáo sư|A2
+profile|n.|hồ sơ cá nhân|A2
+progress|n., v.|tiến bộ|A2
+promise|v., n.|lời hứa, hứa|A2
+pronounce|v.|phát âm|A2
+protect|v.|bảo vệ|A2
+provide|v.|cung cấp|A2
+public|adj., n.|công cộng|A2
+publish|v.|xuất bản|A2
+pull|v.|kéo|A2
+purpose|n.|mục đích|A2
+push|v.|đẩy|A2
+quality|n.|chất lượng|A2
+quantity|n.|số lượng|A2
+queen|n.|nữ hoàng|A2
+quietly|adv.|một cách yên lặng|A2
+race (competition)|n., v.|cuộc đua|A2
+railroad|n.|đường sắt|A2
+raise|v.|nâng lên, nuôi dưỡng|A2
+rate|n.|tỷ lệ, mức giá|A2
+rather|adv.|khá, thà|A2
+reach|v.|đạt tới, với tới|A2
+react|v.|phản ứng|A2
+realize|v.|nhận ra|A2
+receive|v.|nhận|A2
+recent|adj.|gần đây|A2
+recently|adv.|gần đây|A2
+reception|n.|lễ tân, tiệc chiêu đãi|A2
+recipe|n.|công thức nấu ăn|A2
+recognize|v.|nhận ra|A2
+recommend|v.|giới thiệu, đề xuất|A2
+record|n., v.|kỷ lục, bản ghi, ghi lại|A2
+recording|n.|bản ghi âm|A2
+recycle|v.|tái chế|A2
+reduce|v.|giảm|A2
+refer|v.|đề cập, tham khảo|A2
+refrigerator|n.|tủ lạnh|A2
+refuse|v.|từ chối|A2
+region|n.|vùng, khu vực|A2
+regular|adj.|thường xuyên|A2
+relationship|n.|mối quan hệ|A2
+remove|v.|loại bỏ|A2
+repair|v.|sửa chữa|A2
+replace|v.|thay thế|A2
+reply|v., n.|trả lời|A2
+reporter|n.|phóng viên|A2
+request|n.|yêu cầu, lời đề nghị|A2
+research|n., v.|nghiên cứu|A2
+researcher|n.|nhà nghiên cứu|A2
+respond|v.|phản hồi|A2
+response|n.|câu trả lời, phản ứng|A2
+rest (remaining part)|n.|phần còn lại|A2
+rest (sleep/relax)|n., v.|nghỉ ngơi|A2
+review|n., v.|bài đánh giá, ôn tập|A2
+ring|n.|chiếc nhẫn|A2
+ring (v.)|v.|đổ chuông, reo|A2
+rise|v.|tăng lên, mọc|A2
+rock (stone)|n.|đá|A2
+rock (music)|n.|nhạc rock|A2
+role|n.|vai trò|A2
+roof|n.|mái nhà|A2
+round|adj., adv., prep.|tròn|A2
+route|n.|tuyến đường|A2
+rude|adj.|thô lỗ|A2
+runner|n.|người chạy|A2
+running|n.|việc chạy bộ|A2
+sadly|adv.|đáng buồn là, buồn bã|A2
+safe|adj.|an toàn|A2
+sail|v.|đi thuyền buồm|A2
+sailing|n.|môn đi thuyền buồm|A2
+salary|n.|tiền lương|A2
+sale|n.|việc bán, đợt giảm giá|A2
+sauce|n.|nước sốt|A2
+save|v.|tiết kiệm, cứu|A2
+scared|adj.|sợ hãi|A2
+scary|adj.|đáng sợ|A2
+scene|n.|cảnh|A2
+schedule|n.|lịch trình|A2
+score|v., n.|ghi điểm, điểm số|A2
+screen|n.|màn hình|A2
+sea|n.|biển|A2
+search|n., v.|tìm kiếm|A2
+season|n.|mùa|A2
+seat|n.|chỗ ngồi|A2
+secret|adj., n.|bí mật|A2
+secretary|n.|thư ký|A2
+seem|v.|có vẻ như|A2
+sense|n.|giác quan, ý nghĩa|A2
+separate|adj.|riêng biệt|A2
+series|n.|loạt, phim nhiều tập|A2
+serious|adj.|nghiêm trọng, nghiêm túc|A2
+serve|v.|phục vụ|A2
+service|n.|dịch vụ|A2
+several|det./pron.|vài|A2
+shake|v.|lắc|A2
+shape|n.|hình dạng|A2
+sheet|n.|tấm, tờ|A2
+ship|n.|con tàu|A2
+shoulder|n.|vai|A2
+shout|v., n.|hét lên|A2
+shut|v., adj.|đóng lại|A2
+side|n.|bên, mặt|A2
+sign|n., v.|biển báo, dấu hiệu, ký tên|A2
+silver|n., adj.|bạc|A2
+simple|adj.|đơn giản|A2
+since|prep., conj.|kể từ, vì|A2
+singing|n.|việc ca hát|A2
+single|adj., n.|độc thân, đơn|A2
+sir|n.|ngài, thưa ông|A2
+site|n.|địa điểm, trang web|A2
+size|n.|kích cỡ|A2
+ski|v., n., adj.|trượt tuyết|A2
+skiing|n.|môn trượt tuyết|A2
+skin|n.|da|A2
+sky|n.|bầu trời|A2
+slowly|adv.|một cách chậm rãi|A2
+smartphone|n.|điện thoại thông minh|A2
+smell|v., n.|mùi, ngửi|A2
+smile|v., n.|nụ cười, mỉm cười|A2
+smoke|n., v.|khói, hút thuốc|A2
+smoking|n.|việc hút thuốc|A2
+sneaker|n.|giày thể thao|A2
+soap|n.|xà phòng|A2
+soccer|n.|bóng đá|A2
+social|adj.|thuộc xã hội|A2
+society|n.|xã hội|A2
+sock|n.|chiếc tất|A2
+soft|adj.|mềm|A2
+soldier|n.|người lính|A2
+solution|n.|giải pháp|A2
+solve|v.|giải quyết|A2
+somewhere|adv., pron.|một nơi nào đó|A2
+sort|n.|loại, thứ|A2
+source|n.|nguồn|A2
+speaker|n.|người nói, loa|A2
+specific|adj.|cụ thể|A2
+speech|n.|bài phát biểu|A2
+speed|n.|tốc độ|A2
+spider|n.|con nhện|A2
+spoon|n.|cái thìa|A2
+square|adj., n.|vuông, hình vuông, quảng trường|A2
+stage|n.|sân khấu, giai đoạn|A2
+stair|n.|bậc cầu thang|A2
+stamp|n.|con tem|A2
+state|n.|trạng thái, tình trạng, bang|A2
+steal|v.|ăn trộm|A2
+step|n.|bước|A2
+stomach|n.|dạ dày, bụng|A2
+stone|n.|hòn đá|A2
+storm|n.|cơn bão|A2
+stove|n.|bếp lò|A2
+straight|adv., adj.|thẳng|A2
+strange|adj.|lạ lùng|A2
+strategy|n.|chiến lược|A2
+stress|n., v.|căng thẳng|A2
+structure|n.|cấu trúc|A2
+stupid|adj.|ngu ngốc|A2
+subway|n.|tàu điện ngầm|A2
+succeed|v.|thành công|A2
+successful|adj.|thành công, thành đạt|A2
+such|det./pron.|như vậy|A2
+suddenly|adv.|đột nhiên|A2
+suggest|v.|gợi ý|A2
+suggestion|n.|lời gợi ý|A2
+suit|n.|bộ com-lê|A2
+support|v., n.|ủng hộ, hỗ trợ|A2
+suppose|v.|cho rằng, giả sử|A2
+surprise|n., v.|sự ngạc nhiên, làm ngạc nhiên|A2
+surprised|adj.|ngạc nhiên|A2
+surprising|adj.|đáng ngạc nhiên|A2
+survey|n.|cuộc khảo sát|A2
+sweet|adj.|ngọt|A2
+symbol|n.|biểu tượng|A2
+system|n.|hệ thống|A2
+tablet|n.|máy tính bảng, viên thuốc|A2
+target|n.|mục tiêu|A2
+task|n.|nhiệm vụ|A2
+taste|n., v.|vị, nếm|A2
+teaching|n.|việc giảng dạy|A2
+technology|n.|công nghệ|A2
+teenage|adj.|thuộc tuổi thiếu niên|A2
+temperature|n.|nhiệt độ|A2
+term|n.|thuật ngữ, học kỳ|A2
+themselves|pron.|chính họ|A2
+thick|adj.|dày|A2
+thief|n.|tên trộm|A2
+thin|adj.|mỏng, gầy|A2
+thinking|n.|suy nghĩ|A2
+thought|n.|ý nghĩ|A2
+throw|v.|ném|A2
+tie|v., n.|cà vạt, buộc|A2
+tip|n.|tiền boa, mẹo|A2
+tool|n.|công cụ|A2
+top|n., adj.|đỉnh, trên cùng|A2
+touch|v.|chạm|A2
+tour|n.|chuyến tham quan|A2
+tourism|n.|ngành du lịch|A2
+toward|prep.|về phía|A2
+towel|n.|khăn tắm|A2
+tower|n.|tòa tháp|A2
+toy|n., adj.|đồ chơi|A2
+track|n.|đường ray, dấu vết|A2
+tradition|n.|truyền thống|A2
+traditional|adj.|mang tính truyền thống, theo truyền thống|A2
+training|n.|sự đào tạo|A2
+transportation|n.|giao thông vận tải|A2
+trash|n.|rác|A2
+traveler|n.|du khách|A2
+trouble|n.|rắc rối|A2
+twin|n., adj.|sinh đôi|A2
+typical|adj.|điển hình|A2
+underground|adj., adv.|dưới lòng đất|A2
+understanding|n.|sự hiểu biết|A2
+unfortunately|adv.|thật không may|A2
+unhappy|adj.|không vui|A2
+uniform|n.|đồng phục|A2
+unit|n.|đơn vị|A2
+united|adj.|đoàn kết, thống nhất|A2
+unusual|adj.|khác thường|A2
+used to|modal|từng, trước đây thường|A2
+user|n.|người dùng|A2
+usual|adj.|thường lệ|A2
+valley|n.|thung lũng|A2
+variety|n.|sự đa dạng|A2
+vehicle|n.|phương tiện|A2
+view|n.|quang cảnh, quan điểm|A2
+village|n.|ngôi làng|A2
+virus|n.|vi-rút|A2
+voice|n.|giọng nói|A2
+war|n.|chiến tranh|A2
+washing|n.|việc giặt giũ|A2
+wave|n.|sóng, cái vẫy tay|A2
+weak|adj.|yếu|A2
+web|n.|mạng, mạng nhện|A2
+wedding|n.|đám cưới|A2
+weight|n.|cân nặng|A2
+wet|adj.|ướt|A2
+wheel|n.|bánh xe|A2
+while|conj.|trong khi|A2
+whole|adj.|toàn bộ|A2
+whose|det./pron.|của ai|A2
+wide|adj.|rộng|A2
+wild|adj.|hoang dã|A2
+wind|n.|gió|A2
+winner|n.|người chiến thắng|A2
+wish|v., n.|điều ước, ước|A2
+wood|n.|gỗ|A2
+wooden|adj.|bằng gỗ|A2
+working|adj.|đang làm việc|A2
+worried|adj.|lo lắng|A2
+worry|v.|lo lắng|A2
+worse|adj.|tệ hơn|A2
+worst|adj.|tệ nhất|A2
+wow|exclam.|ôi chao|A2
+yet|adv.|chưa, vẫn|A2
+yours|pron.|của bạn|A2
+zero|number|số không|A2
+absolutely|adv.|hoàn toàn|B1
+academic|adj.|thuộc học thuật|B1
+access|n., v.|quyền truy cập|B1
+account|n.|tài khoản|B1
+achievement|n.|thành tựu|B1
+ad|n.|quảng cáo|B1
+addition|n.|sự bổ sung|B1
+administration|n.|sự quản lý, chính quyền|B1
+admire|v.|ngưỡng mộ|B1
+admit|v.|thừa nhận|B1
+advanced|adj.|nâng cao|B1
+advise|v.|khuyên|B1
+afford|v.|có đủ khả năng chi trả|B1
+agent|n.|đại lý, người môi giới|B1
+agreement|n.|thỏa thuận|B1
+ahead|adv.|phía trước|B1
+aim|v., n.|nhắm tới, mục tiêu|B1
+alarm|n.|chuông báo động|B1
+album|n.|album|B1
+alcohol|n.|rượu bia|B1
+alcoholic|adj.|có cồn|B1
+amazed|adj.|kinh ngạc|B1
+ambition|n.|tham vọng|B1
+analysis|n.|sự phân tích|B1
+announce|v.|thông báo|B1
+announcement|n.|lời thông báo|B1
+annoy|v.|làm bực mình, chọc tức|B1
+annoyed|adj.|bực mình|B1
+annoying|adj.|khó chịu, phiền phức|B1
+apart|adv.|cách xa, tách ra|B1
+apologize|v.|xin lỗi|B1
+application|n.|đơn xin, ứng dụng|B1
+appointment|n.|cuộc hẹn|B1
+appreciate|v.|đánh giá cao, cảm kích|B1
+approximately|adv.|xấp xỉ|B1
+arrest|v., n.|bắt giữ|B1
+arrival|n.|sự đến nơi|B1
+aside|adv.|sang một bên|B1
+assignment|n.|bài tập, nhiệm vụ|B1
+assist|v.|hỗ trợ|B1
+atmosphere|n.|bầu không khí|B1
+attach|v.|đính kèm|B1
+attitude|n.|thái độ|B1
+attract|v.|thu hút|B1
+attraction|n.|điểm thu hút|B1
+authority|n.|chính quyền, thẩm quyền|B1
+automatic|adj.|tự động|B1
+automatically|adv.|một cách tự động|B1
+aware|adj.|nhận thức được|B1
+backward|adv.|lùi về phía sau|B1
+bake|v.|nướng (bánh)|B1
+balance|n., v.|sự cân bằng|B1
+ban|v., n.|cấm|B1
+bank (river)|n.|bờ sông|B1
+base|n., v.|căn cứ, cơ sở|B1
+basic|adj.|cơ bản|B1
+basis|n.|nền tảng|B1
+battery|n.|pin|B1
+battle|n.|trận chiến|B1
+beat|v.|đánh bại, đánh, đập|B1
+beauty|n.|vẻ đẹp|B1
+bee|n.|con ong|B1
+belief|n.|niềm tin|B1
+bell|n.|cái chuông|B1
+bend|v., n.|uốn cong|B1
+bite|v., n.|cắn|B1
+bomb|n., v.|quả bom|B1
+border|n.|biên giới|B1
+bother|v.|làm phiền|B1
+branch|n.|cành cây, chi nhánh|B1
+brand|n., v.|thương hiệu|B1
+brave|adj.|dũng cảm|B1
+breathe|v.|thở|B1
+breathing|n.|hơi thở|B1
+bride|n.|cô dâu|B1
+bubble|n.|bong bóng|B1
+bury|v.|chôn|B1
+cable|n.|dây cáp|B1
+calm|adj., v., n.|bình tĩnh|B1
+campaign|n., v.|chiến dịch|B1
+candidate|n.|ứng viên|B1
+cap|n.|mũ lưỡi trai, nắp|B1
+captain|n.|thuyền trưởng, đội trưởng|B1
+careless|adj.|bất cẩn|B1
+category|n.|danh mục|B1
+ceiling|n.|trần nhà|B1
+celebration|n.|lễ kỷ niệm|B1
+central|adj.|trung tâm|B1
+ceremony|n.|buổi lễ|B1
+chain|n.|dây xích, chuỗi|B1
+challenge|n.|thử thách|B1
+champion|n.|nhà vô địch|B1
+channel|n.|kênh|B1
+chapter|n.|chương|B1
+charge|n., v.|phí, sạc pin|B1
+cheat|v., n.|gian lận|B1
+cheerful|adj.|vui vẻ|B1
+chemical|adj., n.|hóa chất|B1
+chest|n.|ngực, cái rương|B1
+childhood|n.|thời thơ ấu|B1
+claim|v., n.|tuyên bố, yêu cầu|B1
+clause|n.|mệnh đề, điều khoản|B1
+clever|adj.|thông minh|B1
+click|v., n.|nhấp chuột|B1
+client|n.|khách hàng|B1
+cloth|n.|vải|B1
+clue|n.|manh mối|B1
+coal|n.|than đá|B1
+coin|n.|đồng xu|B1
+collection|n.|bộ sưu tập|B1
+colored|adj.|có màu|B1
+combine|v.|kết hợp|B1
+commercial|adj., n.|thương mại, quảng cáo|B1
+commit|v.|phạm phải, cam kết|B1
+communication|n.|sự giao tiếp|B1
+comparison|n.|sự so sánh|B1
+competitive|adj.|có tính cạnh tranh|B1
+competitor|n.|đối thủ|B1
+complaint|n.|lời phàn nàn|B1
+complex|adj.|phức tạp|B1
+concentrate|v.|tập trung|B1
+conclude|v.|kết luận|B1
+conclusion|n.|kết luận|B1
+confident|adj.|tự tin|B1
+confirm|v.|xác nhận|B1
+confuse|v.|làm bối rối|B1
+confused|adj.|bối rối|B1
+connection|n.|sự kết nối|B1
+consequence|n.|hậu quả|B1
+consist|v.|gồm có, bao gồm|B1
+consume|v.|tiêu thụ|B1
+consumer|n.|người tiêu dùng|B1
+contact|n., v.|liên lạc|B1
+container|n.|thùng chứa|B1
+content|n.|nội dung|B1
+continuous|adj.|liên tục|B1
+contrast|n., v.|sự tương phản, tương phản|B1
+convenient|adj.|tiện lợi|B1
+convince|v.|thuyết phục|B1
+costume|n.|trang phục hóa trang|B1
+cotton|n.|bông, vải cotton|B1
+countryside|n.|miền quê|B1
+court|n.|tòa án, sân thi đấu|B1
+covered|adj.|được che phủ|B1
+cruel|adj.|tàn nhẫn|B1
+cultural|adj.|thuộc văn hóa|B1
+cupboard|n.|tủ chén|B1
+currency|n.|tiền tệ|B1
+current|adj.|hiện tại|B1
+currently|adv.|hiện nay|B1
+curtain|n.|rèm cửa|B1
+custom|n.|phong tục|B1
+damage|n., v.|thiệt hại|B1
+decade|n.|thập kỷ|B1
+define|v.|định nghĩa|B1
+definite|adj.|chắc chắn, rõ ràng|B1
+definition|n.|định nghĩa|B1
+deliver|v.|giao hàng|B1
+departure|n.|sự khởi hành|B1
+despite|prep.|mặc dù|B1
+destination|n.|điểm đến|B1
+determine|v.|xác định|B1
+determined|adj.|quyết tâm|B1
+development|n.|sự phát triển|B1
+diagram|n.|sơ đồ|B1
+diamond|n.|kim cương|B1
+difficulty|n.|khó khăn|B1
+directly|adv.|trực tiếp|B1
+dirt|n.|chất bẩn, đất|B1
+disadvantage|n.|bất lợi|B1
+disappointed|adj.|thất vọng|B1
+disappointing|adj.|đáng thất vọng|B1
+discount|n.|giảm giá|B1
+dislike|v., n.|không thích|B1
+district|n.|quận, khu vực|B1
+divide|v.|chia|B1
+documentary|n.|phim tài liệu|B1
+donate|v.|quyên góp|B1
+doubt|n., v.|nghi ngờ|B1
+dressed|adj.|mặc quần áo|B1
+drum|n.|cái trống|B1
+drunk|adj.|say rượu|B1
+due|adj.|đến hạn|B1
+dust|n.|bụi|B1
+duty|n.|nhiệm vụ, bổn phận|B1
+earthquake|n.|động đất|B1
+eastern|adj.|thuộc phía đông|B1
+economic|adj.|thuộc kinh tế|B1
+economy|n.|nền kinh tế|B1
+edge|n.|mép, rìa|B1
+editor|n.|biên tập viên|B1
+educate|v.|giáo dục|B1
+educated|adj.|có học thức|B1
+educational|adj.|mang tính giáo dục|B1
+effective|adj.|hiệu quả|B1
+effectively|adv.|một cách hiệu quả|B1
+effort|n.|nỗ lực|B1
+election|n.|cuộc bầu cử|B1
+element|n.|yếu tố, nguyên tố|B1
+embarrassed|adj.|xấu hổ|B1
+embarrassing|adj.|đáng xấu hổ|B1
+emergency|n.|trường hợp khẩn cấp|B1
+emotion|n.|cảm xúc|B1
+employment|n.|việc làm|B1
+encourage|v.|khuyến khích|B1
+enemy|n.|kẻ thù|B1
+engaged|adj.|đã đính hôn, bận|B1
+engineering|n.|ngành kỹ thuật|B1
+entertain|v.|giải trí, chiêu đãi|B1
+entertainment|n.|sự giải trí|B1
+entrance|n.|lối vào|B1
+entry|n.|sự tham gia, lối vào|B1
+environmental|adj.|thuộc môi trường|B1
+episode|n.|tập phim|B1
+equal|adj., v.|bằng nhau|B1
+equally|adv.|một cách bình đẳng|B1
+escape|v., n.|trốn thoát|B1
+essential|adj.|thiết yếu|B1
+eventually|adv.|cuối cùng thì|B1
+examine|v.|kiểm tra, xem xét|B1
+exchange|n., v.|trao đổi|B1
+excitement|n.|sự phấn khích|B1
+exhibition|n.|cuộc triển lãm|B1
+exit|n.|lối ra|B1
+expand|v.|mở rộng|B1
+expected|adj.|được mong đợi|B1
+experienced|adj.|có kinh nghiệm|B1
+explode|v.|phát nổ|B1
+explore|v.|khám phá|B1
+explosion|n.|vụ nổ|B1
+export|n., v.|xuất khẩu|B1
+fairly|adv.|khá|B1
+familiar|adj.|quen thuộc|B1
+fancy|adj.|sang trọng, cầu kỳ|B1
+fascinating|adj.|hấp dẫn|B1
+fashionable|adj.|hợp thời trang|B1
+fasten|v.|buộc chặt, cài|B1
+favor|n.|sự giúp đỡ, ưu ái|B1
+federal|adj.|liên bang|B1
+fence|n.|hàng rào|B1
+fighting|n.|cuộc chiến đấu|B1
+file|n.|tập tin, hồ sơ|B1
+financial|adj.|thuộc tài chính|B1
+fitness|n.|thể lực|B1
+fixed|adj.|cố định|B1
+flag|n.|lá cờ|B1
+flood|n., v.|lũ lụt|B1
+flour|n.|bột mì|B1
+flow|v., n.|chảy, dòng chảy|B1
+fold|v.|gấp|B1
+folk|n., adj.|dân gian|B1
+force|n., v.|lực, ép buộc|B1
+forever|adv.|mãi mãi|B1
+frame|n., v.|khung|B1
+freeze|v.|đóng băng|B1
+frequently|adv.|thường xuyên|B1
+friendship|n.|tình bạn|B1
+frighten|v.|làm hoảng sợ|B1
+frightened|adj.|hoảng sợ|B1
+frightening|adj.|đáng sợ|B1
+frozen|adj.|đông lạnh|B1
+fry|v.|chiên, rán|B1
+fuel|n.|nhiên liệu|B1
+function|n.|chức năng|B1
+fur|n.|lông thú|B1
+garage|n.|nhà để xe, ga-ra|B1
+gather|v.|tụ tập, thu thập|B1
+generally|adv.|nói chung|B1
+generation|n.|thế hệ|B1
+generous|adj.|rộng lượng|B1
+gentle|adj.|dịu dàng|B1
+ghost|n.|con ma|B1
+giant|adj., n.|khổng lồ|B1
+glad|adj.|vui mừng|B1
+global|adj.|toàn cầu|B1
+glove|n.|găng tay|B1
+grade|n.|điểm số, lớp|B1
+graduate|n., v.|tốt nghiệp|B1
+grain|n.|ngũ cốc, hạt|B1
+grateful|adj.|biết ơn|B1
+growth|n.|sự tăng trưởng|B1
+guard|n., v.|bảo vệ, canh gác|B1
+guilty|adj.|có tội, cảm thấy có lỗi|B1
+hang|v.|treo|B1
+happiness|n.|hạnh phúc|B1
+hardly|adv.|hầu như không|B1
+headline|n.|tiêu đề báo|B1
+heating|n.|hệ thống sưởi|B1
+heavily|adv.|nhiều, dữ dội, nặng nề|B1
+helicopter|n.|máy bay trực thăng|B1
+highlight|v., n.|làm nổi bật|B1
+highly|adv.|rất, ở mức cao|B1
+highway|n.|đường cao tốc|B1
+hire|v.|thuê|B1
+historic|adj.|có tính lịch sử|B1
+historical|adj.|thuộc lịch sử|B1
+honest|adj.|trung thực|B1
+horrible|adj.|kinh khủng|B1
+horror|n.|nỗi kinh hoàng, kinh dị|B1
+host|n.|chủ nhà, người dẫn chương trình|B1
+hunt|v.|săn bắn|B1
+hurricane|n.|cơn bão lớn|B1
+hurry|n., v.|vội vàng|B1
+identity|n.|danh tính|B1
+ignore|v.|phớt lờ|B1
+illegal|adj.|bất hợp pháp|B1
+imaginary|adj.|tưởng tượng|B1
+immediate|adj.|ngay lập tức|B1
+immigrant|n.|người nhập cư|B1
+impact|n., v.|tác động|B1
+import|n., v.|nhập khẩu|B1
+importance|n.|tầm quan trọng|B1
+impression|n.|ấn tượng|B1
+impressive|adj.|gây ấn tượng, đáng nể|B1
+improvement|n.|sự cải thiện|B1
+incredibly|adv.|vô cùng|B1
+indeed|adv.|thật vậy|B1
+indicate|v.|chỉ ra|B1
+indirect|adj.|gián tiếp|B1
+indoor|adj.|trong nhà|B1
+indoors|adv.|ở trong nhà|B1
+influence|n., v.|ảnh hưởng|B1
+ingredient|n.|nguyên liệu|B1
+injure|v.|làm bị thương|B1
+injured|adj.|bị thương|B1
+innocent|adj.|vô tội|B1
+intelligence|n.|trí thông minh|B1
+intend|v.|dự định|B1
+intention|n.|ý định|B1
+invest|v.|đầu tư|B1
+investigate|v.|điều tra|B1
+involved|adj.|có liên quan|B1
+iron|n., v.|sắt, bàn ủi|B1
+issue|n.|vấn đề|B1
+IT (n.)|n.|công nghệ thông tin|B1
+journal|n.|tạp chí, nhật ký|B1
+journey|n.|hành trình|B1
+judge|n., v.|thẩm phán, đánh giá|B1
+keyboard|n.|bàn phím|B1
+kick|v., n.|đá|B1
+killing|n.|vụ giết người|B1
+kind (caring)|adj.|tốt bụng|B1
+kiss|v., n.|hôn, nụ hôn|B1
+label|n., v.|nhãn|B1
+laboratory|n.|phòng thí nghiệm|B1
+lack|n., v.|sự thiếu|B1
+latest|adj.|mới nhất|B1
+lay|v.|đặt, nằm xuống|B1
+layer|n.|lớp|B1
+leading|adj.|dẫn đầu|B1
+leaf|n.|chiếc lá|B1
+leather|n.|da thuộc|B1
+legal|adj.|hợp pháp|B1
+leisure|n.|thời gian rảnh|B1
+length|n.|chiều dài|B1
+lie (tell a lie)|v., n.|nói dối|B1
+limit|n., v.|giới hạn|B1
+lip|n.|môi|B1
+liquid|n., adj.|chất lỏng|B1
+literature|n.|văn học|B1
+live (adj., adv.)|adj., adv.|trực tiếp, còn sống|B1
+living|adj., n.|đang sống, cuộc sống|B1
+locate|v.|xác định vị trí|B1
+located|adj.|nằm ở|B1
+location|n.|vị trí|B1
+lonely|adj.|cô đơn|B1
+loss|n.|sự mất mát|B1
+luxury|n.|sự xa xỉ|B1
+mad|adj.|điên, giận dữ|B1
+magic|n., adj.|phép thuật|B1
+mainly|adv.|chủ yếu|B1
+management|n.|sự quản lý|B1
+marketing|n.|tiếp thị|B1
+marriage|n.|hôn nhân|B1
+meanwhile|adv.|trong khi đó|B1
+measure|v., n.|đo lường|B1
+medium|adj.|trung bình, vừa|B1
+mental|adj.|thuộc tinh thần|B1
+mess|n., v.|sự bừa bộn|B1
+mild|adj.|nhẹ, ôn hòa|B1
+mine (hole in the ground)|n.|mỏ|B1
+mix|v., n.|trộn|B1
+mixture|n.|hỗn hợp|B1
+mood|n.|tâm trạng|B1
+mud|n.|bùn|B1
+murder|n., v.|vụ giết người|B1
+muscle|n.|cơ bắp|B1
+mystery|n.|điều bí ẩn|B1
+nail|n.|móng tay, cái đinh|B1
+narrative|n., adj.|câu chuyện, tường thuật|B1
+nation|n.|quốc gia|B1
+native|adj., n.|bản địa|B1
+naturally|adv.|một cách tự nhiên|B1
+neat|adj.|gọn gàng|B1
+necessarily|adv.|nhất thiết|B1
+needle|n.|cây kim|B1
+net|n.|lưới|B1
+nor|conj./adv.|cũng không|B1
+northern|adj.|thuộc phía bắc|B1
+nuclear|adj.|hạt nhân|B1
+obvious|adj.|hiển nhiên|B1
+obviously|adv.|rõ ràng là|B1
+occasion|n.|dịp|B1
+occur|v.|xảy ra|B1
+odd|adj.|kỳ lạ|B1
+official|adj.|chính thức|B1
+old-fashioned|adj.|lỗi thời|B1
+operation|n.|ca phẫu thuật, hoạt động|B1
+organized|adj.|có tổ chức|B1
+organizer|n.|người tổ chức|B1
+originally|adv.|ban đầu|B1
+ought|modal|nên|B1
+ours|pron.|của chúng tôi|B1
+outdoor|adj.|ngoài trời|B1
+outdoors|adv.|ở ngoài trời|B1
+package|n.|gói hàng|B1
+painful|adj.|đau đớn|B1
+pale|adj.|nhợt nhạt|B1
+pan|n.|chảo|B1
+participate|v.|tham gia|B1
+particularly|adv.|đặc biệt|B1
+passion|n.|niềm đam mê|B1
+path|n.|con đường mòn|B1
+payment|n.|sự thanh toán|B1
+peaceful|adj.|yên bình|B1
+percentage|n.|tỷ lệ phần trăm|B1
+perfectly|adv.|một cách hoàn hảo|B1
+performance|n.|buổi biểu diễn, hiệu suất|B1
+personally|adv.|cá nhân tôi|B1
+persuade|v.|thuyết phục|B1
+photographer|n.|nhiếp ảnh gia|B1
+photography|n.|nhiếp ảnh|B1
+pin|n., v.|ghim|B1
+pipe|n.|ống|B1
+planning|n.|việc lập kế hoạch|B1
+pleasant|adj.|dễ chịu|B1
+pleasure|n.|niềm vui|B1
+plenty|pron.|nhiều, dồi dào|B1
+plot|n.|cốt truyện|B1
+plus|prep.|cộng thêm|B1
+podcast|n.|podcast|B1
+poem|n.|bài thơ|B1
+poet|n.|nhà thơ|B1
+poetry|n.|thơ ca|B1
+poison|n., v.|chất độc, đầu độc|B1
+poisonous|adj.|có độc|B1
+policy|n.|chính sách|B1
+political|adj.|thuộc chính trị|B1
+politician|n.|chính trị gia|B1
+politics|n.|chính trị|B1
+port|n.|cảng|B1
+portrait|n.|bức chân dung|B1
+possibly|adv.|có thể|B1
+pot|n.|cái nồi|B1
+pour|v.|rót|B1
+poverty|n.|sự nghèo đói|B1
+powder|n.|bột|B1
+powerful|adj.|mạnh mẽ|B1
+practical|adj.|thiết thực, thực tế|B1
+pray|v.|cầu nguyện|B1
+prayer|n.|lời cầu nguyện|B1
+prediction|n.|dự đoán|B1
+prepared|adj.|đã chuẩn bị|B1
+presentation|n.|bài thuyết trình|B1
+press|v., n.|nhấn, báo chí|B1
+pressure|n.|áp lực|B1
+pretend|v.|giả vờ|B1
+previous|adj.|trước đó|B1
+previously|adv.|trước đây|B1
+priest|n.|linh mục|B1
+primary|adj.|chính, tiểu học|B1
+prince|n.|hoàng tử|B1
+princess|n.|công chúa|B1
+principal|n.|hiệu trưởng|B1
+printing|n.|việc in ấn|B1
+prisoner|n.|tù nhân|B1
+private|adj.|riêng tư|B1
+producer|n.|nhà sản xuất|B1
+production|n.|sự sản xuất|B1
+profession|n.|nghề nghiệp|B1
+profit|n.|lợi nhuận|B1
+promote|v.|thúc đẩy, thăng chức|B1
+proper|adj.|đúng đắn, phù hợp|B1
+properly|adv.|một cách đúng đắn|B1
+property|n.|tài sản, bất động sản|B1
+protest|n., v.|cuộc biểu tình, phản đối|B1
+proud|adj.|tự hào|B1
+prove|v.|chứng minh|B1
+punish|v.|trừng phạt|B1
+punishment|n.|hình phạt|B1
+qualification|n.|bằng cấp, trình độ|B1
+qualified|adj.|đủ trình độ|B1
+qualify|v.|đủ tư cách|B1
+quit|v.|bỏ, thôi|B1
+quotation|n.|lời trích dẫn|B1
+quote|v., n.|trích dẫn|B1
+race (of people)|n.|chủng tộc|B1
+racing|n.|đua xe|B1
+range|n.|phạm vi, dãy|B1
+rare|adj.|hiếm|B1
+rarely|adv.|hiếm khi|B1
+reaction|n.|phản ứng|B1
+reality|n.|thực tế, thực tại|B1
+receipt|n.|biên lai|B1
+recommendation|n.|lời khuyên, lời giới thiệu, đề xuất|B1
+reference|n.|sự tham khảo|B1
+reflect|v.|phản chiếu, suy ngẫm|B1
+regularly|adv.|đều đặn|B1
+reject|v.|từ chối|B1
+relate|v.|liên quan|B1
+related|adj.|có liên quan|B1
+relation|n.|mối quan hệ|B1
+relative|adj., n.|họ hàng, tương đối|B1
+relaxed|adj.|thư giãn|B1
+relaxing|adj.|thư giãn, êm dịu|B1
+release|v., n.|phát hành, thả ra|B1
+reliable|adj.|đáng tin cậy|B1
+religion|n.|tôn giáo|B1
+religious|adj.|thuộc tôn giáo|B1
+remain|v.|vẫn còn|B1
+remind|v.|nhắc nhở|B1
+remote|adj.|xa xôi, từ xa|B1
+renewable|adj.|có thể tái tạo|B1
+rent|n., v.|thuê, tiền thuê|B1
+repeated|adj.|lặp đi lặp lại|B1
+represent|v.|đại diện|B1
+require|v.|đòi hỏi, yêu cầu|B1
+reservation|n.|sự đặt chỗ|B1
+resource|n.|nguồn lực|B1
+respect|n., v.|sự tôn trọng, tôn trọng|B1
+responsibility|n.|trách nhiệm|B1
+responsible|adj.|chịu trách nhiệm|B1
+retire|v.|nghỉ hưu|B1
+retired|adj.|đã nghỉ hưu|B1
+revise|v.|ôn lại, sửa đổi|B1
+risk|n., v.|rủi ro, mạo hiểm|B1
+robot|n.|người máy|B1
+roll|v., n.|cuộn, lăn|B1
+romantic|adj.|lãng mạn|B1
+rope|n.|sợi dây thừng|B1
+rough|adj.|thô ráp, gồ ghề, dữ dội|B1
+row|n.|hàng|B1
+royal|adj.|thuộc hoàng gia|B1
+safety|n.|sự an toàn|B1
+sailor|n.|thủy thủ|B1
+sample|n.|mẫu|B1
+sand|n.|cát|B1
+scan|v.|quét|B1
+scientific|adj.|thuộc khoa học|B1
+script|n.|kịch bản|B1
+secondary|adj.|thứ cấp, trung học|B1
+security|n.|an ninh|B1
+seed|n.|hạt giống|B1
+sensible|adj.|hợp lý, khôn ngoan, biết điều|B1
+seriously|adv.|một cách nghiêm túc|B1
+servant|n.|người hầu|B1
+set (put)|v.|đặt|B1
+set (group)|n.|bộ|B1
+setting|n.|bối cảnh, cài đặt|B1
+sex|n.|giới tính|B1
+sexual|adj.|thuộc tình dục|B1
+sharp|adj.|sắc bén|B1
+shelf|n.|kệ|B1
+shell|n.|vỏ|B1
+shift|n.|ca làm việc, sự thay đổi|B1
+shine|v.|chiếu sáng|B1
+shiny|adj.|sáng bóng|B1
+shoot|v.|bắn|B1
+shy|adj.|nhút nhát|B1
+sight|n.|thị giác, cảnh tượng|B1
+signal|n., v.|tín hiệu, ra hiệu|B1
+silent|adj.|im lặng|B1
+silly|adj.|ngớ ngẩn|B1
+similarity|n.|điểm tương đồng|B1
+similarly|adv.|tương tự|B1
+simply|adv.|đơn giản là|B1
+sink|v.|chìm, đắm|B1
+slave|n.|nô lệ|B1
+slice|n., v.|lát|B1
+slightly|adv.|hơi, một chút|B1
+smooth|adj.|mịn, trơn tru|B1
+software|n.|phần mềm|B1
+soil|n.|đất|B1
+solid|adj., n.|rắn, vững chắc|B1
+southern|adj.|thuộc phía nam|B1
+specifically|adv.|cụ thể là|B1
+spending|n.|chi tiêu|B1
+spicy|adj.|cay|B1
+spirit|n.|tinh thần, linh hồn|B1
+spoken|adj.|bằng lời nói, được nói|B1
+spot|n.|đốm, địa điểm|B1
+spread|v.|lan rộng, phết|B1
+stadium|n.|sân vận động|B1
+staff|n.|nhân viên|B1
+standard|n., adj.|tiêu chuẩn|B1
+statistic|n.|số liệu thống kê|B1
+statue|n.|bức tượng|B1
+stick (push into/attach)|v.|dán, cắm vào|B1
+stick (piece of wood)|n.|cái gậy|B1
+stranger|n.|người lạ|B1
+strength|n.|sức mạnh|B1
+string|n.|sợi dây|B1
+strongly|adv.|mạnh mẽ|B1
+studio|n.|phòng thu|B1
+stuff|n.|đồ đạc, thứ|B1
+substance|n.|chất|B1
+successfully|adv.|một cách thành công|B1
+sudden|adj.|đột ngột|B1
+suffer|v.|chịu đựng|B1
+suitable|adj.|phù hợp|B1
+summarize|v.|tóm tắt|B1
+summary|n.|bản tóm tắt|B1
+supply|n., v.|nguồn cung cấp, cung cấp|B1
+supporter|n.|người ủng hộ|B1
+surely|adv.|chắc chắn|B1
+surface|n.|bề mặt|B1
+survive|v.|sống sót|B1
+switch|v.|chuyển, đổi, chuyển sang|B1
+symptom|n.|triệu chứng|B1
+tail|n.|cái đuôi|B1
+talent|n.|tài năng|B1
+talented|adj.|có tài|B1
+tax|n., v.|thuế|B1
+technical|adj.|thuộc kỹ thuật|B1
+technique|n.|kỹ thuật|B1
+tend|v.|có xu hướng|B1
+tent|n.|lều|B1
+theirs|pron.|của họ|B1
+theme|n.|chủ đề|B1
+theory|n.|lý thuyết|B1
+therefore|adv.|do đó|B1
+though|conj., adv.|mặc dù|B1
+throat|n.|cổ họng|B1
+throughout|prep./adv.|suốt|B1
+tight|adj.|chặt, bó sát|B1
+till|conj./prep.|cho đến khi|B1
+tiny|adj.|nhỏ xíu|B1
+tire|n.|lốp xe|B1
+toe|n.|ngón chân|B1
+ton|n.|tấn|B1
+tongue|n.|cái lưỡi|B1
+total|adj., n.|tổng số|B1
+totally|adv.|hoàn toàn|B1
+trade|n., v.|thương mại|B1
+trainer|n.|huấn luyện viên|B1
+translate|v.|dịch|B1
+translation|n.|bản dịch|B1
+transport|v.|vận chuyển|B1
+treat|v.|đối xử, chữa trị|B1
+treatment|n.|sự điều trị|B1
+trend|n.|xu hướng|B1
+trick|n., v.|mẹo, trò lừa|B1
+truth|n.|sự thật|B1
+tube|n.|ống|B1
+typically|adv.|thường thì|B1
+ugly|adj.|xấu xí|B1
+unable|adj.|không thể|B1
+uncomfortable|adj.|không thoải mái|B1
+underwear|n.|đồ lót|B1
+unemployed|adj.|thất nghiệp|B1
+unemployment|n.|tình trạng thất nghiệp|B1
+unfair|adj.|không công bằng|B1
+union|n.|liên minh, công đoàn|B1
+unless|conj.|trừ khi|B1
+unlike|prep.|không giống|B1
+unlikely|adj.|khó xảy ra|B1
+unnecessary|adj.|không cần thiết|B1
+unpleasant|adj.|khó chịu|B1
+update|v., n.|cập nhật|B1
+upset|adj., v.|buồn bực, làm buồn lòng|B1
+used|adj.|đã qua sử dụng|B1
+used to (adj.)|adj.|quen với|B1
+valuable|adj.|có giá trị|B1
+value|n.|giá trị|B1
+various|adj.|nhiều loại|B1
+version|n.|phiên bản|B1
+victim|n.|nạn nhân|B1
+viewer|n.|người xem|B1
+violent|adj.|bạo lực|B1
+volunteer|n., v.|tình nguyện viên|B1
+vote|n., v.|bỏ phiếu|B1
+warn|v.|cảnh báo|B1
+warning|n.|lời cảnh báo|B1
+waste|n., v., adj.|lãng phí, rác thải|B1
+weapon|n.|vũ khí|B1
+weigh|v.|cân, nặng (bao nhiêu)|B1
+western|adj.|thuộc phía tây|B1
+whatever|det./pron.|bất cứ điều gì|B1
+whenever|conj.|bất cứ khi nào|B1
+whether|conj.|liệu rằng|B1
+Wi-Fi™|n.|Wi-Fi|B1
+wing|n.|cánh|B1
+within|prep.|trong vòng|B1
+wonder|v., n.|tự hỏi, điều kỳ diệu|B1
+wool|n.|len|B1
+worldwide|adj., adv.|trên toàn thế giới|B1
+worth|adj.|đáng giá|B1
+written|adj.|bằng văn bản|B1
+youth|n.|tuổi trẻ|B1
+abandon|v.|bỏ rơi, từ bỏ|B2
+abroad|adv.|ở nước ngoài|B2
+absolute|adj.|tuyệt đối|B2
+acceptable|adj.|chấp nhận được|B2
+accompany|v.|đi cùng|B2
+accurate|adj.|chính xác|B2
+accuse|v.|buộc tội|B2
+acknowledge|v.|thừa nhận|B2
+acquire|v.|có được, giành được, thu được|B2
+actual|adj.|thực sự, có thật|B2
+adapt|v.|thích nghi|B2
+additional|adj.|bổ sung|B2
+adopt|v.|nhận nuôi, áp dụng|B2
+advance|n., v., adj.|sự tiến bộ, tiến lên|B2
+affair|n.|vụ việc, chuyện|B2
+afterward|adv.|sau đó|B2
+agency|n.|cơ quan, đại lý|B2
+agenda|n.|chương trình nghị sự|B2
+aggressive|adj.|hung hăng|B2
+AI|n.|trí tuệ nhân tạo|B2
+aid|n., v.|viện trợ, sự giúp đỡ|B2
+aircraft|n.|máy bay|B2
+alter|v.|thay đổi|B2
+anger|n.|cơn giận|B2
+angle|n.|góc|B2
+anniversary|n.|ngày kỷ niệm|B2
+annual|adj.|hằng năm|B2
+anxious|adj.|lo âu|B2
+apparent|adj.|rõ ràng|B2
+apparently|adv.|hình như|B2
+appeal|n., v.|sức hấp dẫn, kháng cáo|B2
+approach|n., v.|cách tiếp cận|B2
+appropriate|adj.|phù hợp|B2
+approval|n.|sự chấp thuận|B2
+approve|v.|phê duyệt|B2
+arise|v.|nảy sinh|B2
+armed|adj.|có vũ trang|B2
+arms|n.|vũ khí|B2
+artificial|adj.|nhân tạo|B2
+artistic|adj.|có tính nghệ thuật|B2
+ashamed|adj.|xấu hổ|B2
+aspect|n.|khía cạnh|B2
+assess|v.|đánh giá|B2
+assessment|n.|sự đánh giá|B2
+associate|v.|liên kết|B2
+associated|adj.|có liên quan|B2
+association|n.|hiệp hội|B2
+assume|v.|cho rằng|B2
+attempt|n., v.|nỗ lực, cố gắng|B2
+attorney|n.|luật sư|B2
+bacteria|n.|vi khuẩn|B2
+barrier|n.|rào cản|B2
+basically|adv.|về cơ bản|B2
+bear (deal with)|v.|chịu đựng|B2
+beg|v.|van xin|B2
+being|n.|sinh vật, sự tồn tại|B2
+bent|adj.|bị cong|B2
+bet|v., n.|đặt cược|B2
+beyond|prep., adv.|vượt ra ngoài|B2
+bitter|adj.|đắng|B2
+blame|v., n.|đổ lỗi|B2
+blind|adj.|mù|B2
+bond|n.|mối liên kết, trái phiếu|B2
+breast|n.|ngực|B2
+breath|n.|hơi thở|B2
+brief|adj.|ngắn gọn|B2
+broad|adj.|rộng|B2
+broadcast|v., n.|phát sóng|B2
+budget|n.|ngân sách|B2
+bullet|n.|viên đạn|B2
+bunch|n.|chùm, bó|B2
+bush|n.|bụi cây|B2
+calculate|v.|tính toán|B2
+cancel|v.|hủy|B2
+cancer|n.|ung thư|B2
+capable|adj.|có khả năng|B2
+capacity|n.|sức chứa, năng lực|B2
+capture|v., n.|bắt giữ, ghi lại|B2
+cast|n., v.|dàn diễn viên, ném|B2
+characteristic|n., adj.|đặc điểm|B2
+chief|adj., n.|chính, người đứng đầu|B2
+circumstance|n.|hoàn cảnh|B2
+cite|v.|trích dẫn|B2
+citizen|n.|công dân|B2
+civil|adj.|thuộc dân sự|B2
+classic|adj., n.|kinh điển|B2
+closely|adv.|chặt chẽ|B2
+collapse|v., n.|sụp đổ|B2
+combination|n.|sự kết hợp|B2
+comfort|n., v.|sự thoải mái|B2
+command|n., v.|mệnh lệnh|B2
+commission|n., v.|hoa hồng, ủy ban|B2
+commitment|n.|sự cam kết|B2
+committee|n.|ủy ban|B2
+commonly|adv.|thường thường|B2
+complicated|adj.|phức tạp|B2
+component|n.|thành phần|B2
+concentration|n.|sự tập trung|B2
+concept|n.|khái niệm|B2
+concern|n., v.|mối lo ngại|B2
+concerned|adj.|lo lắng|B2
+conduct|v., n.|tiến hành, hành vi|B2
+confidence|n.|sự tự tin|B2
+conflict|n., v.|xung đột|B2
+confusing|adj.|gây khó hiểu|B2
+congress|n.|quốc hội|B2
+conscious|adj.|có ý thức|B2
+conservative|adj., n.|bảo thủ|B2
+consideration|n.|sự cân nhắc|B2
+consistent|adj.|nhất quán|B2
+constant|adj.|không đổi, liên tục|B2
+constantly|adv.|luôn luôn, không ngừng|B2
+construct|v.|xây dựng|B2
+construction|n.|sự xây dựng|B2
+contemporary|adj.|đương đại|B2
+contest|n., v.|cuộc thi|B2
+contract|n., v.|hợp đồng|B2
+contribute|v.|đóng góp|B2
+contribution|n.|sự đóng góp|B2
+convert|v.|chuyển đổi|B2
+convinced|adj.|tin chắc|B2
+core|n., adj.|cốt lõi|B2
+corporate|adj.|thuộc công ty, doanh nghiệp|B2
+council|n.|hội đồng|B2
+county|n.|hạt|B2
+courage|n.|lòng can đảm|B2
+crash|n., v.|va chạm, sập|B2
+creation|n.|sự sáng tạo|B2
+creature|n.|sinh vật|B2
+crew|n.|thủy thủ đoàn, phi hành đoàn, đội|B2
+crisis|n.|khủng hoảng|B2
+criterion|n.|tiêu chí|B2
+critic|n.|nhà phê bình|B2
+critical|adj.|quan trọng, chỉ trích|B2
+criticism|n.|sự chỉ trích|B2
+criticize|v.|chỉ trích|B2
+crop|n.|vụ mùa|B2
+crucial|adj.|then chốt|B2
+cure|v., n.|chữa khỏi|B2
+curve|n., v.|đường cong|B2
+curved|adj.|cong|B2
+debate|n., v.|cuộc tranh luận|B2
+debt|n.|món nợ|B2
+decent|adj.|tử tế, khá tốt|B2
+declare|v.|tuyên bố|B2
+decline|v., n.|suy giảm, từ chối|B2
+decorate|v.|trang trí|B2
+decoration|n.|đồ trang trí|B2
+decrease|v., n.|giảm|B2
+deeply|adv.|sâu sắc|B2
+defeat|v., n.|đánh bại|B2
+defend|v.|bảo vệ|B2
+defense|n.|sự phòng thủ|B2
+delay|v., n.|trì hoãn|B2
+deliberate|adj.|có chủ ý|B2
+deliberately|adv.|cố ý|B2
+delivery|n.|sự giao hàng|B2
+demand|n., v.|nhu cầu, yêu cầu|B2
+demonstrate|v.|chứng minh, trình diễn|B2
+deny|v.|phủ nhận|B2
+depressed|adj.|chán nản|B2
+depressing|adj.|gây buồn chán|B2
+depth|n.|chiều sâu|B2
+deserve|v.|xứng đáng|B2
+desire|n., v.|mong muốn|B2
+desperate|adj.|tuyệt vọng|B2
+detailed|adj.|chi tiết|B2
+detect|v.|phát hiện|B2
+dig|v.|đào|B2
+discipline|n.|kỷ luật|B2
+dishonest|adj.|không trung thực|B2
+dismiss|v.|bác bỏ, sa thải|B2
+display|v., n.|trưng bày|B2
+distribute|v.|phân phát|B2
+distribution|n.|sự phân phối|B2
+division|n.|sự chia, bộ phận|B2
+domestic|adj.|trong nước, gia đình|B2
+dominate|v.|thống trị|B2
+downward|adj., adv.|hướng xuống, xuống dưới|B2
+dozen|n., det.|một tá|B2
+draft|n., v.|bản nháp|B2
+drag|v.|kéo lê|B2
+dramatic|adj.|đầy kịch tính|B2
+edit|v.|chỉnh sửa|B2
+edition|n.|ấn bản|B2
+efficient|adj.|hiệu quả|B2
+elderly|adj.|lớn tuổi|B2
+elect|v.|bầu chọn|B2
+elsewhere|adv.|ở nơi khác|B2
+emerge|v.|nổi lên|B2
+emotional|adj.|xúc động|B2
+emphasis|n.|sự nhấn mạnh|B2
+emphasize|v.|nhấn mạnh|B2
+enable|v.|cho phép, giúp có thể|B2
+encounter|v., n.|bắt gặp|B2
+engage|v.|thu hút, tham gia|B2
+enhance|v.|nâng cao|B2
+ensure|v.|đảm bảo|B2
+enthusiasm|n.|sự nhiệt tình|B2
+enthusiastic|adj.|nhiệt tình|B2
+entire|adj.|toàn bộ|B2
+entirely|adv.|hoàn toàn|B2
+establish|v.|thành lập|B2
+estate|n.|bất động sản|B2
+estimate|v., n.|ước tính|B2
+ethical|adj.|thuộc đạo đức|B2
+evaluate|v.|đánh giá|B2
+evil|adj., n.|xấu xa|B2
+examination|n.|kỳ thi, sự kiểm tra|B2
+excuse|n., v.|lời bào chữa|B2
+executive|n., adj.|giám đốc điều hành|B2
+exhibit|v., n.|trưng bày|B2
+existence|n.|sự tồn tại|B2
+expectation|n.|sự kỳ vọng|B2
+expense|n.|chi phí|B2
+exploration|n.|sự thám hiểm|B2
+expose|v.|phơi bày|B2
+extend|v.|mở rộng|B2
+extent|n.|mức độ|B2
+external|adj.|bên ngoài|B2
+extraordinary|adj.|phi thường|B2
+facility|n.|cơ sở vật chất|B2
+failure|n.|sự thất bại|B2
+faith|n.|niềm tin|B2
+fault|n.|lỗi|B2
+feather|n.|lông vũ|B2
+fee|n.|phí|B2
+feedback|n.|phản hồi|B2
+fellow|adj.|cùng, đồng (vd: bạn học)|B2
+finance|n., v.|tài chính|B2
+finding|n.|phát hiện|B2
+firm|n.|công ty, hãng|B2
+flame|n.|ngọn lửa|B2
+flash|n., v.|ánh chớp|B2
+flexible|adj.|linh hoạt|B2
+float|v.|nổi|B2
+folding|adj.|có thể gấp lại|B2
+forgive|v.|tha thứ|B2
+former|adj.|cựu, trước đây|B2
+fortune|n.|tài sản, vận may|B2
+found|v.|thành lập|B2
+freedom|n.|sự tự do|B2
+frequency|n.|tần suất|B2
+fully|adv.|đầy đủ|B2
+fund|n., v.|quỹ|B2
+fundamental|adj.|cơ bản|B2
+funding|n.|nguồn vốn|B2
+furthermore|adv.|hơn nữa|B2
+gain|v., n.|đạt được|B2
+gang|n.|băng nhóm|B2
+gender|n.|giới tính|B2
+generate|v.|tạo ra|B2
+genre|n.|thể loại|B2
+goods|n.|hàng hóa|B2
+govern|v.|cai trị|B2
+governor|n.|thống đốc|B2
+grab|v.|chộp lấy|B2
+gradually|adv.|dần dần|B2
+grand|adj.|hùng vĩ|B2
+grant|v., n.|cấp, khoản trợ cấp|B2
+guarantee|v., n.|đảm bảo|B2
+handle|v., n.|xử lý, tay cầm|B2
+harm|n., v.|tác hại|B2
+harmful|adj.|có hại|B2
+hearing|n.|thính giác, phiên điều trần|B2
+heaven|n.|thiên đường|B2
+heel|n.|gót chân|B2
+hell|n.|địa ngục|B2
+hesitate|v.|do dự|B2
+hollow|adj.|rỗng|B2
+holy|adj.|thiêng liêng|B2
+honor|n., v.|danh dự|B2
+household|n.|hộ gia đình|B2
+housing|n.|nhà ở|B2
+humor|n.|sự hài hước|B2
+humorous|adj.|hài hước|B2
+hunting|n.|việc săn bắn|B2
+illustrate|v.|minh họa|B2
+illustration|n.|hình minh họa|B2
+imagination|n.|trí tưởng tượng|B2
+impatient|adj.|thiếu kiên nhẫn|B2
+imply|v.|ngụ ý|B2
+impose|v.|áp đặt|B2
+impress|v.|gây ấn tượng|B2
+impressed|adj.|cảm thấy ấn tượng, thán phục|B2
+inch|n.|inch|B2
+incident|n.|sự việc|B2
+income|n.|thu nhập|B2
+increasingly|adv.|ngày càng|B2
+industrial|adj.|thuộc công nghiệp|B2
+infection|n.|sự nhiễm trùng|B2
+inform|v.|thông báo|B2
+initial|adj.|ban đầu|B2
+initially|adv.|ban đầu|B2
+initiative|n.|sáng kiến|B2
+inner|adj.|bên trong|B2
+inquiry|n.|sự hỏi thông tin, cuộc điều tra|B2
+insight|n.|cái nhìn sâu sắc|B2
+insist|v.|khăng khăng|B2
+inspire|v.|truyền cảm hứng|B2
+install|v.|cài đặt|B2
+instance|n.|ví dụ, trường hợp|B2
+institute|n.|viện, học viện|B2
+institution|n.|tổ chức, thể chế|B2
+insurance|n.|bảo hiểm|B2
+intended|adj.|có chủ đích|B2
+intense|adj.|mãnh liệt|B2
+internal|adj.|bên trong|B2
+interpret|v.|giải thích, phiên dịch|B2
+interrupt|v.|ngắt lời|B2
+investigation|n.|cuộc điều tra|B2
+investment|n.|khoản đầu tư|B2
+joy|n.|niềm vui sướng|B2
+judgment|n.|sự đánh giá, phán đoán, nhận định|B2
+junior|adj.|cấp dưới, trẻ hơn|B2
+justice|n.|công lý|B2
+justify|v.|biện minh|B2
+labor|n.|lao động|B2
+landscape|n.|phong cảnh|B2
+largely|adv.|phần lớn|B2
+launch|v., n.|ra mắt, phóng|B2
+leadership|n.|khả năng lãnh đạo|B2
+league|n.|liên đoàn, giải đấu|B2
+lean|v.|nghiêng, dựa|B2
+license|n.|giấy phép|B2
+limited|adj.|có giới hạn|B2
+lively|adj.|sôi nổi|B2
+load|n., v.|lượng hàng chở, gánh nặng, chất hàng|B2
+loan|n.|khoản vay|B2
+logical|adj.|hợp lý, có logic|B2
+long-term|adj., adv.|dài hạn|B2
+loose|adj.|lỏng|B2
+lord|n.|lãnh chúa|B2
+lower|v.|hạ thấp|B2
+lung|n.|lá phổi|B2
+maintain|v.|duy trì|B2
+majority|n.|đa số|B2
+mass|n., adj.|khối lượng, đại chúng|B2
+massive|adj.|khổng lồ|B2
+master|n., v.|bậc thầy, thành thạo|B2
+matching|adj.|phù hợp, khớp|B2
+maximum|adj., n.|tối đa|B2
+means|n.|phương tiện, cách thức|B2
+measurement|n.|phép đo|B2
+melt|v.|tan chảy|B2
+military|adj., n.|quân sự|B2
+mineral|n.|khoáng chất|B2
+minimum|adj., n.|tối thiểu|B2
+minister|n.|bộ trưởng|B2
+minor|adj.|nhỏ, thứ yếu|B2
+minority|n.|thiểu số|B2
+mission|n.|nhiệm vụ|B2
+mixed|adj.|hỗn hợp|B2
+modify|v.|sửa đổi|B2
+monitor|n., v.|màn hình, giám sát|B2
+moral|adj., n.|đạo đức|B2
+motor|n., adj.|động cơ|B2
+mount|v.|leo lên, gắn|B2
+multiple|adj.|nhiều|B2
+multiply|v.|nhân lên|B2
+mysterious|adj.|bí ẩn|B2
+nerve|n.|dây thần kinh|B2
+nevertheless|adv.|tuy nhiên|B2
+nightmare|n.|cơn ác mộng|B2
+notion|n.|quan niệm|B2
+numerous|adj.|rất nhiều, vô số|B2
+obey|v.|tuân theo|B2
+objective|n., adj.|mục tiêu, khách quan|B2
+obligation|n.|nghĩa vụ|B2
+observation|n.|sự quan sát|B2
+observe|v.|quan sát|B2
+obtain|v.|đạt được|B2
+occasionally|adv.|thỉnh thoảng|B2
+offend|v.|xúc phạm|B2
+offense|n.|sự xúc phạm, tội|B2
+offensive|adj.|xúc phạm|B2
+opening|n.|sự khai mạc, chỗ trống|B2
+operate|v.|vận hành|B2
+opponent|n.|đối thủ|B2
+oppose|v.|phản đối|B2
+opposed|adj.|phản đối, chống lại|B2
+opposition|n.|sự đối lập|B2
+organ|n.|cơ quan nội tạng|B2
+origin|n.|nguồn gốc|B2
+otherwise|adv.|nếu không thì|B2
+outcome|n.|kết quả|B2
+outer|adj.|bên ngoài|B2
+outline|n., v.|dàn ý, phác thảo|B2
+overall|adj., adv.|tổng thể|B2
+owe|v.|nợ|B2
+pace|n., v.|tốc độ, nhịp độ, bước đi|B2
+panel|n.|hội đồng, bảng điều khiển|B2
+participant|n.|người tham gia|B2
+partly|adv.|một phần|B2
+passage|n.|đoạn văn, lối đi|B2
+permanent|adj.|vĩnh viễn|B2
+permit|v., n.|cho phép|B2
+perspective|n.|góc nhìn|B2
+phase|n.|giai đoạn|B2
+phenomenon|n.|hiện tượng|B2
+philosophy|n.|triết học|B2
+pile|n., v.|đống|B2
+pitch|n.|sân, cao độ|B2
+plain|adj.|đơn giản|B2
+pointed|adj.|nhọn|B2
+popularity|n.|sự nổi tiếng|B2
+pose|v.|tạo dáng, đặt ra|B2
+possess|v.|sở hữu|B2
+potential|adj., n.|tiềm năng|B2
+praise|n., v.|lời khen, khen ngợi|B2
+pregnant|adj.|mang thai|B2
+preparation|n.|sự chuẩn bị|B2
+presence|n.|sự hiện diện|B2
+preserve|v.|bảo tồn|B2
+prime|adj.|chính, hàng đầu|B2
+principle|n.|nguyên tắc|B2
+priority|n.|sự ưu tiên|B2
+privacy|n.|quyền riêng tư|B2
+procedure|n.|thủ tục|B2
+proof|n.|bằng chứng|B2
+proposal|n.|đề xuất|B2
+propose|v.|đề xuất, cầu hôn|B2
+prospect|n.|triển vọng|B2
+protection|n.|sự bảo vệ|B2
+psychologist|n.|nhà tâm lý học|B2
+psychology|n.|tâm lý học|B2
+publication|n.|ấn phẩm|B2
+purchase|n., v.|mua, sự mua hàng|B2
+pure|adj.|tinh khiết|B2
+pursue|v.|theo đuổi|B2
+rank|n., v.|thứ hạng, xếp hạng|B2
+rapid|adj.|nhanh chóng|B2
+rapidly|adv.|một cách nhanh chóng|B2
+raw|adj.|sống, thô|B2
+realistic|adj.|thực tế|B2
+reasonable|adj.|hợp lý|B2
+recall|v.|nhớ lại|B2
+recover|v.|hồi phục|B2
+reduction|n.|sự giảm|B2
+regard|v., n.|coi như, sự quan tâm|B2
+regional|adj.|thuộc vùng|B2
+register|v., n.|đăng ký|B2
+regret|v., n.|hối tiếc|B2
+regulation|n.|quy định|B2
+relatively|adv.|tương đối|B2
+relevant|adj.|liên quan|B2
+relief|n.|sự nhẹ nhõm|B2
+rely|v.|dựa vào|B2
+remark|n., v.|nhận xét|B2
+representative|n., adj.|người đại diện|B2
+reputation|n.|danh tiếng|B2
+requirement|n.|yêu cầu, điều kiện bắt buộc|B2
+rescue|v., n.|giải cứu|B2
+reserve|n., v.|dự trữ, đặt trước|B2
+resident|n., adj.|cư dân|B2
+resist|v.|chống lại|B2
+resolve|v.|giải quyết|B2
+resort|n.|khu nghỉ dưỡng|B2
+retain|v.|giữ lại|B2
+reveal|v.|tiết lộ|B2
+revolution|n.|cuộc cách mạng|B2
+reward|n., v.|phần thưởng|B2
+rhythm|n.|nhịp điệu|B2
+rid|v.|loại bỏ|B2
+root|n.|rễ cây|B2
+rub|v.|cọ xát|B2
+rubber|n., adj.|cao su|B2
+rural|adj.|nông thôn|B2
+rush|v., n.|vội vã|B2
+satellite|n.|vệ tinh|B2
+satisfied|adj.|hài lòng|B2
+satisfy|v.|làm hài lòng|B2
+saving|n.|sự tiết kiệm|B2
+scale|n.|quy mô, cái cân|B2
+scream|v., n.|hét lên|B2
+sector|n.|lĩnh vực|B2
+secure|v., adj.|an toàn, bảo đảm|B2
+seek|v.|tìm kiếm|B2
+select|v.|lựa chọn|B2
+selection|n.|sự chọn lựa|B2
+self|n.|bản thân|B2
+senate|n.|thượng viện|B2
+senator|n.|thượng nghị sĩ|B2
+senior|adj.|cấp cao, lớn tuổi|B2
+sensitive|adj.|nhạy cảm|B2
+sequence|n.|trình tự|B2
+session|n.|buổi họp, phiên|B2
+settle|v.|ổn định, giải quyết|B2
+severe|adj.|nghiêm trọng|B2
+shade|n.|bóng râm|B2
+shadow|n.|cái bóng|B2
+shall|modal|sẽ|B2
+shallow|adj.|nông|B2
+shame|n.|sự xấu hổ|B2
+shelter|n., v.|nơi trú ẩn|B2
+shock|n., v.|cú sốc|B2
+shocked|adj.|bị sốc|B2
+shooting|n.|vụ nổ súng|B2
+shot|n.|phát bắn, mũi tiêm|B2
+significant|adj.|đáng kể|B2
+significantly|adv.|một cách đáng kể|B2
+silence|n.|sự im lặng|B2
+silk|n.|lụa|B2
+sincere|adj.|chân thành|B2
+slide|v., n.|trượt|B2
+slight|adj.|nhẹ, nhỏ|B2
+slip|v.|trượt chân|B2
+slope|n., v.|dốc|B2
+solar|adj.|thuộc mặt trời|B2
+somewhat|adv.|phần nào|B2
+soul|n.|linh hồn|B2
+specialist|n., adj.|chuyên gia|B2
+species|n.|loài|B2
+spiritual|adj.|thuộc tinh thần|B2
+split|v., n.|chia tách|B2
+sponsor|v., n.|nhà tài trợ, tài trợ|B2
+stable|adj.|ổn định|B2
+stare|v.|nhìn chằm chằm|B2
+status|n.|địa vị, tình trạng|B2
+steady|adj.|vững vàng|B2
+steel|n.|thép|B2
+steep|adj.|dốc đứng|B2
+sticky|adj.|dính|B2
+stock|n.|cổ phiếu, hàng tồn|B2
+stream|n.|dòng suối|B2
+stretch|v., n.|kéo dài, duỗi|B2
+strict|adj.|nghiêm khắc|B2
+strike|v., n.|cuộc đình công, đánh|B2
+struggle|v., n.|đấu tranh|B2
+submit|v.|nộp|B2
+sum|n., v.|tổng số|B2
+surgery|n.|phẫu thuật|B2
+surround|v.|bao quanh|B2
+surrounding|adj.|xung quanh|B2
+suspect|v., n.|nghi ngờ|B2
+swear|v.|thề, chửi thề|B2
+sweep|v.|quét|B2
+sympathy|n.|sự cảm thông|B2
+tale|n.|câu chuyện|B2
+tank|n.|bể chứa, xe tăng|B2
+tear|v.|xé rách|B2
+tear (n.)|n.|giọt nước mắt|B2
+temporary|adj.|tạm thời|B2
+therapy|n.|liệu pháp|B2
+threat|n.|mối đe dọa|B2
+threaten|v.|đe dọa|B2
+thus|adv.|do đó|B2
+tone|n.|giọng điệu, âm điệu|B2
+tough|adj.|khó khăn, cứng rắn|B2
+transfer|v., n.|chuyển giao|B2
+transform|v.|biến đổi|B2
+transition|n.|sự chuyển đổi|B2
+trial|n.|phiên tòa, thử nghiệm|B2
+tropical|adj.|nhiệt đới|B2
+truly|adv.|thực sự|B2
+trust|n., v.|niềm tin, tin tưởng|B2
+tune|n.|giai điệu|B2
+tunnel|n.|đường hầm|B2
+ultimately|adv.|cuối cùng, rốt cuộc|B2
+unconscious|adj.|bất tỉnh, vô thức|B2
+unexpected|adj.|bất ngờ|B2
+unique|adj.|độc nhất|B2
+universe|n.|vũ trụ|B2
+unknown|adj.|không biết, chưa biết, vô danh|B2
+upon|prep.|trên|B2
+upper|adj.|phía trên|B2
+upward|adv.|hướng lên, lên trên|B2
+urban|adj.|thuộc đô thị|B2
+urge|v.|thúc giục|B2
+vaccine|n.|vắc-xin|B2
+van|n.|xe tải nhỏ|B2
+vary|v.|thay đổi|B2
+vast|adj.|rộng lớn|B2
+venue|n.|địa điểm tổ chức|B2
+via|prep.|thông qua|B2
+victory|n.|chiến thắng|B2
+violence|n.|bạo lực|B2
+virtual|adj.|ảo|B2
+vision|n.|tầm nhìn|B2
+visual|adj.|thuộc thị giác|B2
+vital|adj.|sống còn|B2
+vitamin|n.|vi-ta-min|B2
+volume|n.|âm lượng, khối lượng|B2
+wage|n.|tiền công|B2
+weakness|n.|điểm yếu|B2
+wealth|n.|sự giàu có|B2
+wealthy|adj.|giàu có|B2
+well-being|n.|sức khỏe và hạnh phúc|B2
+whereas|conj.|trong khi đó|B2
+wherever|conj.|bất cứ nơi đâu|B2
+whom|pron.|ai (tân ngữ)|B2
+widely|adv.|rộng rãi|B2
+wildlife|n.|động vật hoang dã|B2
+willing|adj.|sẵn lòng|B2
+wind (v.)|v.|quấn, cuộn, ngoằn ngoèo|B2
+wire|n.|dây điện|B2
+wise|adj.|khôn ngoan|B2
+witness|n., v.|nhân chứng|B2
+wound|n., v.|vết thương|B2
+wrap|v.|gói|B2
+zone|n.|khu vực|B2
+`;
+const WORDS=RAW.trim().split("\n").map((l,i)=>{const [en,pos,vi,lv]=l.split("|");return{id:i,en,pos,vi,lv}});
+const EX={"about":["This book is about animals.","Cuốn sách này nói về động vật."],"add":["Please add some sugar.","Làm ơn thêm một ít đường."],"afraid":["I am afraid of dogs.","Tôi sợ chó."],"afternoon":["I study in the afternoon.","Tôi học vào buổi chiều."],"agree":["I agree with you.","Tôi đồng ý với bạn."],"airport":["The airport is very big.","Sân bay rất lớn."],"always":["She always smiles.","Cô ấy luôn mỉm cười."],"angry":["He is angry today.","Hôm nay anh ấy đang tức giận."],"animal":["A dog is an animal.","Con chó là một động vật."],"answer":["Please answer my question.","Làm ơn trả lời câu hỏi của tôi."],"arrive":["The bus arrives at six.","Xe buýt đến lúc sáu giờ."],"ask":["Can I ask a question?","Tôi có thể hỏi một câu không?"],"baby":["The baby is sleeping.","Em bé đang ngủ."],"bad":["The weather is bad today.","Hôm nay thời tiết xấu."],"beautiful":["What a beautiful flower!","Bông hoa đẹp quá!"],"because":["I am happy because it is Friday.","Tôi vui vì hôm nay là thứ Sáu."],"bed":["I go to bed at ten.","Tôi đi ngủ lúc mười giờ."],"big":["They have a big house.","Họ có một ngôi nhà lớn."],"birthday":["Today is my birthday.","Hôm nay là sinh nhật của tôi."],"book":["I read a book every week.","Tôi đọc một quyển sách mỗi tuần."],"breakfast":["I eat breakfast at seven.","Tôi ăn sáng lúc bảy giờ."],"brother":["My brother plays football.","Anh trai tôi chơi bóng đá."],"buy":["I want to buy a hat.","Tôi muốn mua một cái mũ."],"busy":["I am busy today.","Hôm nay tôi bận."],"cat":["The cat is on the chair.","Con mèo ở trên ghế."],"cheap":["This shirt is cheap.","Cái áo này rẻ."],"child":["The child is playing.","Đứa trẻ đang chơi."],"city":["I live in a big city.","Tôi sống ở một thành phố lớn."],"clean":["My room is clean.","Phòng của tôi sạch sẽ."],"close":["Please close the door.","Làm ơn đóng cửa lại."],"cold":["It is cold in winter.","Mùa đông trời lạnh."],"cook":["My mother cooks dinner.","Mẹ tôi nấu bữa tối."],"dance":["We dance at the party.","Chúng tôi nhảy ở bữa tiệc."],"dangerous":["The road is dangerous.","Con đường này nguy hiểm."],"dark":["It is dark outside.","Bên ngoài trời tối."],"daughter":["She has one daughter.","Cô ấy có một cô con gái."],"delicious":["This soup is delicious.","Món súp này rất ngon."],"difficult":["This question is difficult.","Câu hỏi này khó."],"dinner":["We have dinner together.","Chúng tôi ăn tối cùng nhau."],"doctor":["The doctor helps sick people.","Bác sĩ giúp đỡ người bệnh."],"door":["Open the door, please.","Làm ơn mở cửa."],"drink":["I drink water every day.","Tôi uống nước mỗi ngày."],"early":["I wake up early.","Tôi thức dậy sớm."],"easy":["This game is easy.","Trò chơi này dễ."],"eat":["We eat rice for lunch.","Chúng tôi ăn cơm vào bữa trưa."],"egg":["I eat an egg for breakfast.","Tôi ăn một quả trứng vào bữa sáng."],"family":["I love my family.","Tôi yêu gia đình tôi."],"fast":["The train is very fast.","Tàu hỏa rất nhanh."],"father":["My father works in an office.","Bố tôi làm việc ở văn phòng."],"favorite":["Blue is my favorite color.","Màu xanh dương là màu yêu thích của tôi."],"find":["I cannot find my keys.","Tôi không tìm thấy chìa khóa."],"fish":["The fish swims in the river.","Con cá bơi trong sông."],"food":["I like Vietnamese food.","Tôi thích đồ ăn Việt Nam."],"forget":["Do not forget your bag.","Đừng quên cái túi của bạn."],"friend":["She is my best friend.","Cô ấy là bạn thân nhất của tôi."],"funny":["That joke is funny.","Câu đùa đó buồn cười."],"game":["We play a game after school.","Chúng tôi chơi một trò chơi sau giờ học."],"girl":["The girl is reading.","Cô gái đang đọc sách."],"give":["Please give me a pen.","Làm ơn đưa cho tôi một cái bút."],"go":["I go to school by bus.","Tôi đến trường bằng xe buýt."],"good":["This is a good book.","Đây là một quyển sách hay."],"happy":["I am happy today.","Hôm nay tôi vui."],"hat":["He wears a red hat.","Anh ấy đội một cái mũ đỏ."],"have":["I have two sisters.","Tôi có hai chị em gái."],"hear":["I can hear music.","Tôi nghe thấy tiếng nhạc."],"help":["Can you help me?","Bạn có thể giúp tôi không?"],"home":["I am at home.","Tôi đang ở nhà."],"hot":["The tea is hot.","Trà nóng."],"house":["Their house is near the park.","Nhà của họ gần công viên."],"hungry":["I am hungry.","Tôi đói."],"important":["Sleep is important.","Giấc ngủ rất quan trọng."],"job":["He has a new job.","Anh ấy có một công việc mới."],"know":["I know her name.","Tôi biết tên cô ấy."],"late":["Sorry, I am late.","Xin lỗi, tôi đến muộn."],"learn":["I learn English every day.","Tôi học tiếng Anh mỗi ngày."],"like (find sb/sth pleasant)":["I like music.","Tôi thích âm nhạc."],"listen":["Listen to the teacher.","Hãy lắng nghe giáo viên."],"live":["I live in a small town.","Tôi sống ở một thị trấn nhỏ."],"long":["She has long hair.","Cô ấy có mái tóc dài."],"look":["Look at the sky!","Hãy nhìn bầu trời!"],"love":["I love my mother.","Tôi yêu mẹ tôi."],"lunch":["We eat lunch at noon.","Chúng tôi ăn trưa vào buổi trưa."],"make":["I make tea every morning.","Tôi pha trà mỗi buổi sáng."],"market":["I go to the market on Sunday.","Tôi đi chợ vào Chủ nhật."],"meet":["Nice to meet you.","Rất vui được gặp bạn."],"milk":["The baby drinks milk.","Em bé uống sữa."],"money":["I need some money.","Tôi cần một ít tiền."],"morning":["Good morning!","Chào buổi sáng!"],"mother":["My mother cooks well.","Mẹ tôi nấu ăn giỏi."],"movie":["Let's watch a movie.","Chúng ta cùng xem phim nhé."],"music":["She listens to music.","Cô ấy nghe nhạc."],"name":["My name is Linh.","Tên tôi là Linh."],"need":["I need some water.","Tôi cần một ít nước."],"new":["I have a new phone.","Tôi có một chiếc điện thoại mới."],"night":["The stars come out at night.","Các vì sao xuất hiện vào ban đêm."],"old":["My grandfather is old.","Ông tôi đã già."],"open":["Open your book, please.","Làm ơn mở sách ra."],"pay":["I pay with cash.","Tôi trả bằng tiền mặt."],"play":["The children play in the park.","Bọn trẻ chơi trong công viên."],"pretty":["She wears a pretty dress.","Cô ấy mặc một chiếc váy xinh."],"quiet":["The library is quiet.","Thư viện rất yên tĩnh."],"rain":["I like the rain.","Tôi thích mưa."],"read":["I read a story every night.","Tôi đọc một câu chuyện mỗi tối."],"ready":["Are you ready?","Bạn sẵn sàng chưa?"],"remember":["Do you remember my name?","Bạn có nhớ tên tôi không?"],"run":["I run in the morning.","Tôi chạy bộ vào buổi sáng."],"sad":["She looks sad.","Cô ấy trông buồn."],"say":["What did you say?","Bạn vừa nói gì?"],"school":["The school is near my house.","Trường học gần nhà tôi."],"see":["I see a bird.","Tôi nhìn thấy một con chim."],"sell":["They sell fruit.","Họ bán trái cây."],"sleep":["I sleep eight hours.","Tôi ngủ tám tiếng."],"small":["It is a small cat.","Đó là một con mèo nhỏ."],"speak":["Can you speak English?","Bạn nói được tiếng Anh không?"],"start":["The class starts at nine.","Lớp học bắt đầu lúc chín giờ."],"stay":["Please stay with me.","Hãy ở lại với tôi."],"stop":["Stop here, please.","Làm ơn dừng ở đây."],"study":["I study after dinner.","Tôi học bài sau bữa tối."],"sun":["The sun is bright.","Mặt trời rất sáng."],"take":["Take an umbrella.","Hãy mang theo một cái ô."],"tall":["The tree is tall.","Cái cây cao."],"teacher":["Our teacher is kind.","Giáo viên của chúng tôi tốt bụng."],"tell":["Tell me a story.","Hãy kể cho tôi một câu chuyện."],"thank":["Thank you very much.","Cảm ơn bạn rất nhiều."],"think":["I think it is a good idea.","Tôi nghĩ đó là một ý hay."],"tired":["I am tired after work.","Tôi mệt sau giờ làm việc."],"today":["Today is Tuesday.","Hôm nay là thứ Ba."],"tomorrow":["See you tomorrow!","Hẹn gặp bạn ngày mai!"],"travel":["I like to travel by train.","Tôi thích đi du lịch bằng tàu hỏa."],"try":["Try this cake.","Hãy thử cái bánh này."],"understand":["I do not understand.","Tôi không hiểu."],"use":["I use my phone every day.","Tôi dùng điện thoại mỗi ngày."],"visit":["We visit my grandmother on Sunday.","Chúng tôi thăm bà vào Chủ nhật."],"wait":["Please wait here.","Làm ơn chờ ở đây."],"wake":["I wake up at six.","Tôi thức dậy lúc sáu giờ."],"walk":["We walk to school.","Chúng tôi đi bộ đến trường."],"want":["I want a cup of tea.","Tôi muốn một tách trà."],"water":["Water is important.","Nước rất quan trọng."],"weather":["The weather is nice today.","Hôm nay thời tiết đẹp."],"work":["My father works in a bank.","Bố tôi làm việc ở ngân hàng."],"write":["Write your name here.","Hãy viết tên bạn ở đây."],"yesterday":["I was at home yesterday.","Hôm qua tôi ở nhà."],"bank (money)":["I keep my money in the bank.","Tôi gửi tiền ở ngân hàng."],"bank (river)":["We sit on the river bank.","Chúng tôi ngồi trên bờ sông."],"light (from the sun/a lamp)":["Turn on the light, please.","Làm ơn bật đèn lên."],"light (not heavy)":["This bag is very light.","Cái túi này rất nhẹ."],"mean":["What does this word mean?","Từ này có nghĩa là gì?"],"kind (type)":["What kind of music do you like?","Bạn thích loại nhạc nào?"],"kind (caring)":["She is kind to everyone.","Cô ấy tốt với mọi người."],"like (similar)":["He looks like his father.","Anh ấy trông giống bố của mình."],"last (final)":["This is the last page.","Đây là trang cuối cùng."],"last (taking time)":["The film lasts two hours.","Bộ phim kéo dài hai tiếng."],"second (unit of time)":["Wait a second.","Chờ một giây."],"second (next after the first)":["This is my second cup of tea.","Đây là tách trà thứ hai của tôi."],"match (contest/correspond)":["We watched a football match.","Chúng tôi xem một trận bóng đá."],"rest (sleep/relax)":["I need to rest.","Tôi cần nghỉ ngơi."],"rest (remaining part)":["I will eat the rest later.","Tôi sẽ ăn phần còn lại sau."],"race (competition)":["He won the race.","Anh ấy thắng cuộc đua."],"bear (animal)":["The bear lives in the forest.","Con gấu sống trong rừng."],"close (adj.)":["Our house is close to the school.","Nhà chúng tôi gần trường học."],"live (adj., adv.)":["We watched a live concert.","Chúng tôi xem một buổi hòa nhạc trực tiếp."],"can (n.)":["He drinks from a can.","Anh ấy uống từ một cái lon."],"may (modal)":["May I come in?","Tôi vào được không ạ?"],"ring":["She wears a gold ring.","Cô ấy đeo một chiếc nhẫn vàng."],"ring (v.)":["The phone is ringing.","Điện thoại đang đổ chuông."],"tear (n.)":["A tear ran down her face.","Một giọt nước mắt chảy xuống má cô ấy."],"tear":["Do not tear the paper.","Đừng xé giấy."],"IT (n.)":["She works in IT.","Cô ấy làm việc trong ngành công nghệ thông tin."]};
+WORDS.forEach(w=>{const e=EX[w.en];if(e){w.ex=e[0];w.exv=e[1]}});
+const COL=["#0b8a6a","#0a7a91","#e8590c","#b86e00","#3b6fd4","#d6336c","#6f4fc9","#2b8a3e","#c2410c","#1971c2"];
+const KEY="word-garden-v2";
+const DEF={name:"",goal:10,learned:[],known:[],done:{date:"",ids:[]},streak:0,last:"",best:null,tests:0,box:{},log:{}};
+const PK="word-garden-profiles",CK="word-garden-current";
+// ---- security: every stored / imported value is rebuilt with strict types, so nothing odd can reach the page
+const isDay=v=>typeof v==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(v);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const toInt=(v,lo,hi,d)=>{const n=Number(v);return Number.isFinite(n)&&Number.isInteger(n)&&n>=lo&&n<=hi?n:d};
+const ids=a=>Array.isArray(a)?[...new Set(a.filter(x=>Number.isInteger(x)&&x>=0&&x<WORDS.length))]:[];
+const PLACEHOLDER=/^(friend|learner|my friend|user)$/i;
+const cleanName=v=>(typeof v==="string"?v.replace(/[\u0000-\u001f<>]/g,"").trim().slice(0,30):"")||"";
+function sanitize(d){
+ d=d&&typeof d==="object"&&!Array.isArray(d)?d:{};
+ const o=structuredClone(DEF);
+ o.name=cleanName(d.name);o.goal=toInt(d.goal,1,500,10);
+ o.learned=ids(d.learned);o.known=ids(d.known).filter(x=>!o.learned.includes(x));
+ const dn=d.done&&typeof d.done==="object"?d.done:{};o.done={date:isDay(dn.date)?dn.date:"",ids:ids(dn.ids)};
+ o.streak=toInt(d.streak,0,100000,0);o.last=isDay(d.last)?d.last:"";
+ o.best=d.best==null?null:toInt(d.best,0,100,null);o.tests=toInt(d.tests,0,1e7,0);
+ if(d.box&&typeof d.box==="object")for(const k of Object.keys(d.box)){const id=+k,b=d.box[k];if(Number.isInteger(id)&&id>=0&&id<WORDS.length&&b&&typeof b==="object"&&isDay(b.due))o.box[id]={b:toInt(b.b,0,5,0),due:b.due}}
+ if(d.log&&typeof d.log==="object")for(const k of Object.keys(d.log)){const e=d.log[k];if(isDay(k)&&e&&typeof e==="object")o.log[k]={learned:toInt(e.learned,0,1e5,0),tests:toInt(e.tests,0,1e5,0),q:toInt(e.q,0,1e6,0),ok:toInt(e.ok,0,1e6,0)}}
+ return o;
+}
+const cleanProfiles=a=>Array.isArray(a)?a.filter(p=>p&&typeof p.id==="string"&&/^[a-z0-9]{1,24}$/i.test(p.id)&&typeof p.name==="string").map(p=>{const q={id:p.id,name:cleanName(p.name)||"Learner"};if(p.pin&&typeof p.pin.salt==="string"&&typeof p.pin.hash==="string")q.pin={salt:p.pin.salt,hash:p.pin.hash};q.fails=toInt(p.fails,0,99,0);q.until=toInt(p.until,0,9e15,0);return q}):[];
+const jget=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}};
+const jset=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const pkey=id=>KEY+"-"+id;
+let profiles=cleanProfiles(jget(PK,[])),curId=null,S=structuredClone(DEF);
+// move progress saved by the older version into the first profile
+(()=>{const keep=[];profiles.forEach(pr=>{const d=sanitize(jget(pkey(pr.id),{}));
+  if(PLACEHOLDER.test(pr.name)&&!pr.pin&&!d.learned.length&&!d.known.length){try{localStorage.removeItem(pkey(pr.id))}catch(e){}}else keep.push(pr)});
+ if(keep.length!==profiles.length){profiles=keep;jset(PK,profiles)}})();
+(()=>{const old=jget(KEY,null);if(old&&old.name&&!profiles.length){const c=sanitize(old);profiles=[{id:"p1",name:c.name||"Learner"}];jset(PK,profiles);jset(pkey("p1"),c);try{localStorage.removeItem(KEY)}catch(e){}}})();
+const save=()=>{if(!curId)return;jset(pkey(curId),S);const p=profiles.find(x=>x.id===curId);if(p&&p.name!==S.name){p.name=S.name;jset(PK,profiles)}};
+const $=id=>document.getElementById(id);
+const L=()=>new Set(S.learned.concat(S.known));
+const day=(d=new Date())=>d.toLocaleDateString("en-CA");
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return day(d)};
+const INT=[1,2,4,7,14,30];
+function dueIds(){const t=day();return S.learned.filter(id=>S.box[id]&&S.box[id].due<=t)}
+function updateBox(id,ok){const b=S.box[id];if(!b)return;if(ok){if(b.due>day())return;b.b=Math.min(b.b+1,INT.length-1);b.due=addDays(INT[b.b])}else{b.b=0;b.due=addDays(1)}save()}
+function bump(f,n){const k=day();const l=S.log[k]||(S.log[k]={learned:0,tests:0,q:0,ok:0});l[f]=(l[f]||0)+n}
+function fixBoxes(){S.learned.forEach(id=>{if(!S.box[id])S.box[id]={b:0,due:day()}})}
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+function ensureDay(){if(S.done.date!==day())S.done={date:day(),ids:[]}}
+function greet(){const b=$("bubble");b.classList.remove("pop");void b.offsetWidth;b.classList.add("pop");speak("Hi "+S.name+"!","en-US")}
+function speak(t,l){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=l;speechSynthesis.speak(u)}catch(e){}}
+
+// petals
+for(let i=0;i<12;i++){const p=document.createElement("div");p.className="petal";p.textContent=["🌱","🍃","🌼","✨","📖"][i%5];
+ p.style.left=Math.random()*100+"vw";p.style.animationDuration=(10+Math.random()*12)+"s";p.style.animationDelay=(-Math.random()*20)+"s";document.body.appendChild(p)}
+// confetti
+function confetti(){
+ const c=$("cv"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;
+ const ps=Array.from({length:70},()=>({x:Math.random()*c.width,y:-20-Math.random()*200,v:2+Math.random()*4,r:Math.random()*6,e:["🎉","⭐","🏆","🎈","✨"][Math.random()*5|0]}));
+ let f=0;(function a(){x.clearRect(0,0,c.width,c.height);x.font="24px serif";ps.forEach(p=>{p.y+=p.v;p.x+=Math.sin((p.y+p.r)/30)*2;x.fillText(p.e,p.x,p.y)});
+ if(++f<160)requestAnimationFrame(a);else x.clearRect(0,0,c.width,c.height)})();
+}
+
+// tabs
+function show(t){
+ document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id===t));
+ document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
+ if(t==="home")renderHome();
+ if(t==="test"&&!T)renderTestSetup();
+ if(t==="all")renderAll();
+ if(t==="prog")renderProg();
+ if(t==="know")renderKnow();
+ if(t==="learn"&&!Qtitle)startSession(pending(0),"Today's words");
+ scrollTo(0,0);
+}
+$("nav").onclick=e=>{const b=e.target.closest("button");if(b)show(b.dataset.t)};
+
+// ---------- HOME
+function pending(extra){const need=Math.max(0,S.goal-S.done.ids.length)+extra;const l=L();return WORDS.filter(w=>!l.has(w.id)).slice(0,need).map(w=>w.id)}
+function renderHome(){
+ $("bubble").textContent="Hii "+S.name+"! 💕";
+ ensureDay();
+ $("hello").innerHTML=`Hi ${esc(S.name)} 📚 <button class="edit" onclick="askName()" title="Change name">✏️</button>`;
+ const n=S.done.ids.length,g=S.goal,pct=Math.min(100,n/g*100);
+ $("ring").style.setProperty("--p",pct);
+ $("ringTxt").innerHTML=`${n}/${g}<small>today</small>`;
+ $("plan").textContent=n>=g?"You reached today's goal! 🎉 Amazing!":`${g-n} more word${g-n>1?"s":""} to reach today's goal.`;
+ $("sLearned").textContent=S.learned.length+" / "+WORDS.length;
+ $("sStreak").textContent=S.streak+"🔥";
+ $("sBest").textContent=S.best==null?"–":S.best+"%";
+ $("sKnown").textContent=S.known.length;
+ const due=dueIds().length;$("sDue").textContent=due;
+ $("revBox").innerHTML=due?`🔁 <b>${due}</b> word${due>1?"s":""} ready to review today<br><button class="btn y mt" id="goReview" style="padding:10px 22px">Review now</button>`:"✅ No words to review right now. Come back tomorrow!";
+ if(due)$("goReview").onclick=()=>{const d=dueIds();T=null;startTest(shuffle(d),Math.min(d.length,15),"mix");show("test")};
+ $("sLeft").textContent=Math.ceil(Math.max(0,WORDS.length-S.learned.length-S.known.length)/g);
+ $("goals").innerHTML=[5,10,15,20,30,50].map(v=>`<button class="chip ${v===g?"on":""}" data-g="${v}">${v}</button>`).join("");
+ $("goLearn").textContent=n>=g?"Learn a few more ✨":"Start today's words ✨";
+}
+$("goals").onclick=e=>{const b=e.target.closest("[data-g]");if(b){setGoal(+b.dataset.g)}};
+$("cgGo").onclick=()=>{const v=parseInt($("cg").value);if(v>0)setGoal(Math.min(200,v));$("cg").value=""};
+function setGoal(v){S.goal=v;save();Qtitle="";renderHome()}
+$("goLearn").onclick=()=>{ensureDay();const p=pending(0);startSession(p.length?p:pending(5),p.length?"Today's words":"Bonus words");};
+$("goTest").onclick=()=>{T=null;show("test")};
+let nmMode="rename";
+function askName(force){nmMode="rename";$("nmTitle").textContent=force?"What is your name?":"Change name";$("nmCancel").style.display=force?"none":"inline-block";$("nm").value=force?"":S.name;$("ov").style.display="grid";$("nm").focus()}
+function firstRun(){nmMode="new";$("nmTitle").textContent="Welcome! · Xin chào";$("nmCancel").style.display="none";$("nm").value="";$("ov").style.display="grid";$("nm").focus()}
+function openProfile(id){
+ curId=id;
+ S=sanitize(jget(pkey(id),{}));if(!S.name)S.name=(profiles.find(x=>x.id===id)||{}).name||"";
+ fixBoxes();ensureDay();save();Qtitle="";T=null;
+ $("ov").style.display="none";renderHome();show("home");
+ if(!S.name||PLACEHOLDER.test(S.name))askName(true);
+}
+$("nmCancel").onclick=()=>{$("ov").style.display="none"};
+$("nm").onkeydown=e=>{if(e.key==="Enter")$("nmGo").click()};
+$("nmGo").onclick=()=>{
+ const name=cleanName($("nm").value);
+ if(!name||PLACEHOLDER.test(name)){alert("Please type your own name.");$("nm").focus();return}
+ if(nmMode==="new"){const id="p"+Date.now().toString(36).slice(-6)+Math.random().toString(36).slice(2,6);profiles.push({id,name});jset(PK,profiles);jset(pkey(id),Object.assign(structuredClone(DEF),{name}));openProfile(id);greet()}
+ else{S.name=name;save();$("ov").style.display="none";renderHome();greet()}
+};
+$("fresh").onclick=()=>{
+ if(!confirm("Start fresh?\n\nThis clears the name and ALL progress saved on this device, so the next person can begin with their own name.\n\nTip: tap Cancel and use \"Save my progress\" first if you want to keep a copy."))return;
+ try{Object.keys(localStorage).filter(k=>k.indexOf("word-garden")===0).forEach(k=>localStorage.removeItem(k))}catch(e){}
+ location.reload();
+};
+$("bkSave").onclick=()=>{
+ const blob=new Blob([JSON.stringify({app:"my-word-book",v:2,data:S})],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="word-garden-progress-"+day()+".json";
+ document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
+$("bkLoad").onclick=()=>$("bkFile").click();
+$("bkFile").onchange=e=>{
+ const f=e.target.files[0];e.target.value="";if(!f)return;if(f.size>2e6){alert("That file is too big to be a Word Garden backup.");return}const r=new FileReader();
+ r.onload=()=>{try{
+  const j=JSON.parse(r.result),d=j&&j.app==="my-word-book"&&j.data&&typeof j.data==="object"?j.data:null;
+  if(!d||!Array.isArray(d.learned)||!Array.isArray(d.known))throw 0;
+  if(!confirm("Replace the progress on this device with the backup file?"))return;
+  S=sanitize(d);if(!S.name)S.name=(profiles.find(x=>x.id===curId)||{}).name||"Learner";fixBoxes();ensureDay();save();Qtitle="";T=null;renderHome();alert("Progress restored ✅")
+ }catch(err){alert("This file does not look like a Word Book backup.")}};
+ r.readAsText(f);e.target.value=""};
+
+// ---------- LEARN
+let Q=[],Qtotal=0,Qtitle="";
+let tKind="start";
+function say(t){const b=$("tBubble");b.textContent=t;b.classList.remove("pop");void b.offsetWidth;b.classList.add("pop")}
+function startSession(ids,title){Q=ids.slice();Qtotal=Q.length;Qtitle=title;tKind="start";show("learn");renderLearn()}
+function markLearned(id){
+ ensureDay();
+ S.known=S.known.filter(x=>x!==id);if(!S.learned.includes(id)){S.learned.push(id);bump("learned",1)}
+ if(!S.done.ids.includes(id)&&S.learned.length){S.done.ids.push(id)}
+ if(!S.box[id])S.box[id]={b:0,due:addDays(1)};
+ if(S.last!==day()){const y=new Date();y.setDate(y.getDate()-1);S.streak=S.last===day(y)?S.streak+1:1;S.last=day()}
+ save();
+}
+function renderLearn(){
+ const box=$("learnBox");
+ if(!Q.length){
+  const reached=S.done.ids.length>=S.goal;
+  if(Qtotal)confetti();
+  box.innerHTML=`<div class="center"><div style="font-size:64px">${Qtotal?"🎉":"✨"}</div>
+   <h2>${Qtotal?"Lesson complete!":"Nothing left for now"}</h2>
+   <p class="mt">${reached?`You reached today's goal of ${+S.goal} words. Well done${S.name?", "+esc(S.name):""}! 🎉`:`Today: ${S.done.ids.length} / ${S.goal} words.`}</p>
+   <p class="mt"><button class="btn g" id="lT">Test what I learned 📝</button> <button class="btn y" id="lM">Learn 5 more 🚀</button> <button class="btn w" id="lH">Home</button></p></div>`;
+  say("Amazing, "+S.name+"! 🎉");
+  $("lT").onclick=()=>{T=null;show("test")};
+  $("lM").onclick=()=>{startSession(pending(5).slice(0,5),"Bonus words")};
+  $("lH").onclick=()=>{Qtitle="";show("home")};
+  return;
+ }
+ const w=WORDS[Q[0]],c=COL[w.id%COL.length],c2="color-mix(in srgb,"+c+" 72%,#000)",done=Qtotal-Q.length;
+ box.innerHTML=`<div class="center"><b>${Qtitle}</b> · word ${done+1} of ${Qtotal}</div>
+  <div class="bar mt"><i style="width:${done/Qtotal*100}%"></i></div>
+  <div class="big" id="bc" style="--c:${c}"><div class="inner">
+   <div class="face front" style="background:linear-gradient(135deg,${c},${c2})">
+     <div class="w">${w.en}</div><div class="tag">${w.pos} · ${w.lv}</div>
+     <div><button class="spk" id="sp1">🔊</button></div><div class="hint">tap to see the meaning</div></div>
+   <div class="face back">
+     <div class="l">🇻🇳 VIETNAMESE</div><div class="t" style="margin-bottom:8px">${w.vi}</div>
+     ${w.ex?`<div class="ex"><b>${w.ex}</b><br><span>${w.exv}</span></div>`:""}
+     <div><button class="spk" id="sp2">🔊 EN</button><button class="spk" id="sp3">🔊 VI</button>${w.ex?`<button class="spk" id="sp4" style="width:auto;border-radius:19px;padding:0 12px;font-size:14px">🔊 Sentence</button>`:""}</div></div>
+  </div></div>
+  <div class="center mt"><button class="btn w" id="kn" style="padding:10px 20px">⭐ I already know this word</button></div>
+  <div class="after" id="af"><button class="btn y" id="again">🔁 Show again later</button><button class="btn g" id="got">✓ I got it!</button></div>`;
+ say({start:"Let's learn, "+S.name+"! 📖",got:"Well done, "+S.name+"! ⭐",again:"No worries, we will practise it again 😊",known:"Great, you know it! 👍"}[tKind]||"Say it out loud! 🗣️");
+ $("bc").onclick=e=>{if(e.target.closest(".spk"))return;const f=$("bc").classList.toggle("flip");$("af").classList.add("show");say(f?(w.ex?"Now say the sentence! 🗣️":"Say it with me! 🗣️"):"What does it mean? 🤔")};
+ $("sp1").onclick=()=>speak(w.en,"en-US");$("sp2").onclick=()=>speak(w.en,"en-US");
+ $("sp3").onclick=()=>speak(w.vi,"vi-VN");
+ if($("sp4"))$("sp4").onclick=()=>speak(w.ex,"en-US");
+ $("kn").onclick=()=>{
+  tKind="known";const id=Q.shift();if(!S.known.includes(id))S.known.push(id);save();
+  const l=L(),inQ=new Set(Q);const nx=WORDS.find(x=>!l.has(x.id)&&!inQ.has(x.id));
+  if(nx){Q.push(nx.id);Qtotal++}
+  renderLearn();
+ };
+ $("again").onclick=()=>{tKind="again";Q.push(Q.shift());renderLearn()};
+ $("got").onclick=()=>{tKind="got";markLearned(Q.shift());renderLearn()};
+}
+
+// ---------- TEST
+let T=null;
+const LANG={en:"English",vi:"Vietnamese",hi:"Hindi"};
+function renderTestSetup(){
+ ensureDay();
+ const box=$("testBox"),total=S.learned.length+S.known.length,today=S.done.ids.length,due=dueIds().length;
+ if(!total){box.innerHTML=`<div class="center"><div style="font-size:60px">📚</div><h2>Learn some words first</h2><p class="mt">Your test is made from the words you've learned.</p><p class="mt"><button class="btn" id="tl">Start learning</button></p></div>`;
+  $("tl").onclick=()=>$("goLearn").click();return}
+ box.innerHTML=`<div class="center"><h2>📝 Test time!</h2><p class="mt">Which words should we test?</p>
+  <div class="chips mt" id="scope"><button class="chip on" data-s="today">Today's words (${today})</button><button class="chip" data-s="all">All learned + known (${total})</button>${due?`<button class="chip" data-s="due">🔁 Due for review (${due})</button>`:""}</div>
+  <p class="mt">Which way?</p>
+  <div class="chips mt" id="dir"><button class="chip on" data-d="en-vi">English → Vietnamese</button><button class="chip" data-d="vi-en">Vietnamese → English</button><button class="chip" data-d="mix">Mixed</button></div>
+  <p class="mt">How many questions?</p>
+  <div class="chips mt" id="cnt"><button class="chip" data-n="5">5</button><button class="chip on" data-n="10">10</button><button class="chip" data-n="15">15</button><button class="chip" data-n="20">20</button></div>
+  <p class="mt"><button class="btn g" id="go">Start test 🚀</button></p></div>`;
+ if(!today){box.querySelector('[data-s="today"]').classList.remove("on");box.querySelector('[data-s="all"]').classList.add("on")}
+ const pick=(id,a)=>$(id).onclick=e=>{const b=e.target.closest("button");if(!b)return;$(id).querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));b.classList.add("on")};
+ pick("scope");pick("cnt");pick("dir");
+ $("go").onclick=()=>{
+  const s=$("scope").querySelector(".on").dataset.s,n=+$("cnt").querySelector(".on").dataset.n,dir=$("dir").querySelector(".on").dataset.d;
+  const pool=s==="today"?S.done.ids:s==="due"?dueIds():[...new Set(S.learned.concat(S.known))];
+  if(!pool.length){alert("No words in that group yet 🚀");return}
+  startTest(pool,n,dir);
+ };
+}
+function makeQ(id,dir){
+ const w=WORDS[id],d=dir==="mix"?(Math.random()<.5?"en-vi":"vi-en"):(dir||"en-vi"),[from,to]=d.split("-"),ans=w[to];
+ const bad=x=>x.id!==id&&x.vi!==w.vi&&x.en!==w.en;
+ const cand=shuffle(WORDS.filter(x=>bad(x)&&x.pos===w.pos)).concat(shuffle(WORDS.filter(bad)));
+ const o=new Set([ans]);for(const c of cand){if(o.size>=4)break;o.add(c[to])}
+ return{id,from,to,ans,opts:shuffle([...o])};
+}
+function startTest(pool,n,dir){
+ T={qs:shuffle(pool).slice(0,n).map(id=>makeQ(id,dir)),i:0,score:0,wrong:[]};
+ renderQ();
+}
+function renderQ(){
+ const box=$("testBox");
+ if(T.i>=T.qs.length)return renderResult();
+ const q=T.qs[T.i],w=WORDS[q.id];
+ box.innerHTML=`<div class="center"><b>Question ${T.i+1} of ${T.qs.length}</b></div>
+  <div class="bar mt"><i style="width:${T.i/T.qs.length*100}%"></i></div>
+  <div class="qcap">${q.to==="en"?"Choose the English word":"Choose the "+LANG[q.to]+" meaning"}</div>
+  <div class="q">${w[q.from]}</div>
+  <div class="center"><button class="spk" id="qs" style="background:#e6f4ec">🔊</button></div>
+  <div class="opts mt" id="op">${q.opts.map(o=>`<button class="opt">${o}</button>`).join("")}</div>
+  <p class="center mt" id="nx"></p>`;
+ $("qs").onclick=()=>speak(w[q.from],{en:"en-US",vi:"vi-VN",hi:"hi-IN"}[q.from]);
+ $("op").onclick=e=>{
+  const b=e.target.closest(".opt");if(!b||b.disabled)return;
+  const right=b.textContent===q.ans;
+  $("op").querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(x.textContent===q.ans)x.classList.add("ok")});
+  if(right)T.score++;else{b.classList.add("no");T.wrong.push(q.id)}
+  updateBox(q.id,right);bump("q",1);if(right)bump("ok",1);
+  $("nx").innerHTML=`<div style="font-weight:800;margin-bottom:10px">${right?"✨ Correct!":"Not quite — it's “"+q.ans+"”"}</div>${w.ex?`<div class="ex exr"><b>${w.ex}</b><br><span>${w.exv}</span></div>`:""}<p class="mt"><button class="btn" id="nb">${T.i+1<T.qs.length?"Next →":"See result 🎁"}</button></p>`;
+  $("nb").onclick=()=>{T.i++;renderQ()};
+ };
+}
+function renderResult(){
+ const n=T.qs.length,pct=Math.round(T.score/n*100),st=pct>=90?3:pct>=60?2:1;
+ S.tests++;bump("tests",1);if(S.best==null||pct>S.best)S.best=pct;save();
+ if(pct>=60)confetti();
+ const msg=pct>=90?"Superstar! 🌟":pct>=60?"Great job! Keep going ✨":"Good try! Let's practice the tricky ones 💪";
+ const wr=[...new Set(T.wrong)];
+ $("testBox").innerHTML=`<div class="stars">${"⭐".repeat(st)}${"☆".repeat(3-st)}</div>
+  <div class="score">${T.score} / ${n} · ${pct}%</div><p class="center mt"><b>${msg}</b></p>
+  ${wr.length?`<h3 class="center">Words to practice</h3><div class="wrong">${wr.map(i=>`<div><b>${WORDS[i].en}</b><br>${WORDS[i].vi}</div>`).join("")}</div>`:""}
+  <p class="center mt">${wr.length?'<button class="btn y" id="pr">Practice mistakes 🔁</button> ':""}<button class="btn g" id="ta">Test again</button> <button class="btn w" id="th">Home</button></p>`;
+ if(wr.length)$("pr").onclick=()=>{T=null;Qtitle="";startSession(wr,"Practice")};
+ $("ta").onclick=()=>{T=null;renderTestSetup()};
+ $("th").onclick=()=>{T=null;show("home")};
+}
+
+// ---------- PROGRESS
+let pv="day";
+const ws=d=>{const x=new Date(d);x.setDate(x.getDate()-((x.getDay()+6)%7));return x};
+const fmt=(d,o)=>d.toLocaleDateString("en-GB",o);
+function sumRange(a,b){const r={learned:0,tests:0,q:0,ok:0,days:0};for(const k in S.log){if(k>=a&&k<=b){const e=S.log[k];r.learned+=e.learned||0;r.tests+=e.tests||0;r.q+=e.q||0;r.ok+=e.ok||0;if((e.learned||0)+(e.q||0)>0)r.days++}}return r}
+function periods(v){
+ const out=[],t=new Date();t.setHours(0,0,0,0);
+ if(v==="day")for(let i=13;i>=0;i--){const d=new Date(t);d.setDate(d.getDate()-i);out.push({a:day(d),b:day(d),label:fmt(d,{weekday:"short"})+"<br>"+d.getDate(),full:fmt(d,{weekday:"short",day:"numeric",month:"short"})})}
+ if(v==="week")for(let i=7;i>=0;i--){const s=ws(t);s.setDate(s.getDate()-7*i);const e=new Date(s);e.setDate(e.getDate()+6);out.push({a:day(s),b:day(e),label:fmt(s,{day:"numeric",month:"short"}),full:fmt(s,{day:"numeric",month:"short"})+" – "+fmt(e,{day:"numeric",month:"short"})})}
+ if(v==="month")for(let i=5;i>=0;i--){const s=new Date(t.getFullYear(),t.getMonth()-i,1),e=new Date(s.getFullYear(),s.getMonth()+1,0);out.push({a:day(s),b:day(e),label:fmt(s,{month:"short"}),full:fmt(s,{month:"long",year:"numeric"})})}
+ return out;
+}
+function renderProg(){
+ const box=$("progBox"),ps=periods(pv).map(p=>Object.assign(p,sumRange(p.a,p.b)));
+ const cur=ps[ps.length-1],max=Math.max(1,...ps.map(p=>p.learned)),all=sumRange("0000","9999");
+ const acc=r=>r.q?Math.round(r.ok/r.q*100)+"%":"–";
+ const noun={day:"Today",week:"This week",month:"This month"}[pv];
+ const first=Object.keys(S.log).sort()[0];
+ const tile=(b,s)=>`<div class="stat"><b>${b}</b><span>${s}</span></div>`;
+ const empty=!all.learned&&!all.q;
+ box.innerHTML=`<h2 class="center">📊 My progress</h2>
+  <p class="center sub">See how much you practise every day, week and month.</p>
+  <div class="chips mt">${[["day","📅 Day"],["week","🗓 Week"],["month","🌙 Month"]].map(([k,t])=>`<button class="chip ${k===pv?"on":""}" data-pv="${k}">${t}</button>`).join("")}</div>
+  <div class="ptiles">${tile(cur.learned,noun+": new words")}${tile(cur.tests,noun+": tests")}${tile(acc(cur),noun+": test score")}${tile(all.days,"study days in total")}</div>
+  ${empty?'<p class="center mt"><b>Learn a few words and take a test — your record will appear here! 🌱</b></p>':""}
+  <h3 class="center">New words learned</h3>
+  <div class="chart" style="height:${150}px">${ps.map(p=>{const h=p.learned?Math.max(6,Math.round(p.learned/max*100)):3;return `<div class="pbar ${p===cur?"now":""}"><div class="pv">${p.learned||""}</div><div class="pcol ${!p.learned?"zero":pv==="day"&&p.learned>=S.goal?"goal":""}" style="height:${h}px"></div></div>`}).join("")}</div>
+  <div class="plab">${ps.map(p=>`<div>${p.label}</div>`).join("")}</div>
+  ${pv==="day"?`<p class="center sub mt">🟢 green bar = you reached your daily goal of ${S.goal} words</p>`:""}
+  <h3 class="center">Details</h3>
+  <div class="plist"><div class="prow h"><span></span><span>Words</span><span>Tests</span><span>Score</span></div>
+  ${ps.slice().reverse().map(p=>`<div class="prow ${p===cur?"cur":""} ${!p.learned&&!p.q?"zero":""}"><span>${p.full}${pv==="day"&&p.learned>=S.goal?" ✅":""}</span><span>${p.learned}</span><span>${p.tests}</span><span>${acc(p)}</span></div>`).join("")}</div>
+  ${first?`<p class="center sub mt">Your record started on ${fmt(new Date(first+"T00:00:00"),{day:"numeric",month:"long",year:"numeric"})}.</p>`:""}`;
+ box.querySelectorAll("[data-pv]").forEach(b=>b.onclick=()=>{pv=b.dataset.pv;renderProg()});
+}
+
+// ---------- ALL WORDS
+let page=0;const PER=24;
+["q","sf","lvf"].forEach(id=>$(id).addEventListener("input",()=>{page=0;renderAll()}));
+$("prev").onclick=()=>{page--;renderAll()};$("next").onclick=()=>{page++;renderAll()};
+function renderAll(){
+ const l=L(),q=$("q").value.trim().toLowerCase(),s=$("sf").value,lf=$("lvf").value;
+ const f=WORDS.filter(w=>(!q||w.en.toLowerCase().includes(q)||w.vi.toLowerCase().includes(q))&&(!lf||w.lv===lf)&&(s==="all"||(s==="known")===l.has(w.id)));
+ const pages=Math.max(1,Math.ceil(f.length/PER));if(page>=pages)page=pages-1;
+ const g=$("grid");g.innerHTML="";
+ f.slice(page*PER,page*PER+PER).forEach(w=>{
+  const c=COL[w.id%COL.length],c2="color-mix(in srgb,"+c+" 72%,#000)",d=document.createElement("div");
+  d.className="card"+(l.has(w.id)?" known":"");d.style.setProperty("--c",c);
+  d.innerHTML=`<div class="inner"><div class="face front" style="background:linear-gradient(135deg,${c},${c2})"><div class="w">${w.en}</div><div class="tag">${w.pos} · ${w.lv}</div><div class="hint">tap to flip</div></div>
+   <div class="face back"><div class="l">🇻🇳 VIETNAMESE</div><div class="t">${w.vi}</div>${w.ex?`<div class="ex"><b>${w.ex}</b><br><span>${w.exv}</span></div>`:""}</div></div>`;
+  d.onclick=()=>d.classList.toggle("flip");g.appendChild(d);
+ });
+ if(!f.length)g.innerHTML='<p class="center">No words found 🙈</p>';
+ $("pg").textContent=`Page ${page+1} / ${pages}`;$("prev").disabled=!page;$("next").disabled=page>=pages-1;
+}
+
+let kp=0;const KPER=60;
+["kq"].forEach(id=>$(id).addEventListener("input",()=>{kp=0;renderKnow()}));
+$("kprev").onclick=()=>{kp--;renderKnow()};$("knext").onclick=()=>{kp++;renderKnow()};
+let kView=[];
+function renderKnow(){
+ const q=$("kq").value.trim().toLowerCase(),lr=new Set(S.learned),kn=new Set(S.known);
+ const f=WORDS.filter(w=>!q||w.en.toLowerCase().includes(q)||w.vi.toLowerCase().includes(q));
+ const pages=Math.max(1,Math.ceil(f.length/KPER));if(kp>=pages)kp=pages-1;
+ kView=f.slice(kp*KPER,kp*KPER+KPER).filter(w=>!lr.has(w.id));
+ const g=$("kgrid");g.innerHTML="";
+ f.slice(kp*KPER,kp*KPER+KPER).forEach(w=>{
+  const b=document.createElement("button");b.className="kw"+(kn.has(w.id)?" on":"");
+  b.innerHTML=w.en+"<small>"+w.pos+(lr.has(w.id)?" · learned ✓":"")+"</small>";
+  if(lr.has(w.id))b.disabled=true;
+  b.onclick=()=>{const k=new Set(S.known);k.has(w.id)?k.delete(w.id):k.add(w.id);S.known=[...k];save();b.classList.toggle("on");$("kCount").textContent=S.known.length+" words marked as known"};
+  g.appendChild(b);
+ });
+ $("kCount").textContent=S.known.length+" words marked as known";
+ $("kpg").textContent="Page "+(kp+1)+" / "+pages;$("kprev").disabled=!kp;$("knext").disabled=kp>=pages-1;
+}
+$("kAll").onclick=()=>{const k=new Set(S.known);kView.forEach(w=>k.add(w.id));S.known=[...k];save();renderKnow()};
+$("kNone").onclick=()=>{const v=new Set(kView.map(w=>w.id));S.known=S.known.filter(x=>!v.has(x));save();renderKnow()};
+$("tGirl").src=document.querySelector(".hero .girl").src;
+if(!profiles.length)firstRun();
+else{ // one learner per device: open the one with the most progress
+ const score=pr=>{const d=sanitize(jget(pkey(pr.id),{}));return d.learned.length+d.known.length};
+ openProfile(profiles.slice().sort((x,y)=>score(y)-score(x))[0].id);
+}
+</script>
+</body>
+</html>
