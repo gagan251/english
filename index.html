@@ -209,7 +209,7 @@ body.locked nav,body.locked section{visibility:hidden}
   <div class="rev warn" id="warnBox" style="display:none"></div>
   <div class="rev" id="revBox"></div>
   <p class="center mt"><button class="btn" id="goLearn">Start today's words ✨</button> <button class="btn g" id="goTest">Take a test 📝</button></p>
-  <div class="backup">💾 Your progress stays on this device. Save a tiny file (only a few KB) to your phone's <b>Downloads</b> folder so you never lose it, even if you change phone or clear the browser.<div class="hint2" id="bkInfo"></div><button class="btn w" id="bkSave" style="padding:8px 16px;margin-top:8px">💾 Save to my phone</button> <button class="btn w" id="bkShare" style="padding:8px 16px;margin-top:8px;display:none">📤 Share / save elsewhere</button> <button class="btn w" id="bkLoad" style="padding:8px 16px;margin-top:8px">📂 Restore from file</button><input type="file" id="bkFile" accept=".json,application/json" style="display:none">
+  <div class="backup">💾 Your progress stays on this device. Save a tiny file (only a few KB) to your phone's <b>Downloads</b> folder so you never lose it, even if you change phone or clear the browser.<div class="hint2" id="bkInfo"></div><button class="btn w" id="bkSave" style="padding:8px 16px;margin-top:8px">💾 Save to my phone</button> <button class="btn w" id="bkShare" style="padding:8px 16px;margin-top:8px;display:none">📤 Share / save elsewhere</button> <button class="btn w" id="bkLoad" style="padding:8px 16px;margin-top:8px">📂 Restore from file</button><input type="file" id="bkFile" accept=".html,.json,text/html,application/json" style="display:none">
   <p style="margin-top:12px"><button class="sw" id="fresh" style="margin-left:0">Not you? Start fresh</button></p></div>
  </div>
 </section>
@@ -3339,9 +3339,7 @@ function renderHome(){
  const due=dueIds().length;$("sDue").textContent=due;
  $("bkInfo").textContent=S.lastBackup?"Last saved to your phone: "+S.lastBackup:"Not saved to your phone yet.";
  {const w=$("warnBox"),n=S.learned.length+S.known.length,old=S.lastBackup?(Date.now()-new Date(S.lastBackup+"T00:00:00"))/864e5:999;
-  if(!STORE_OK){w.style.display="block";w.textContent="💾 Tap “Save to my phone” after each lesson to keep your progress."}
-  else if(n>=10&&old>7){w.style.display="block";w.textContent="💾 Please save a copy of your progress to your phone (tap “Save to my phone” below). It only takes a second."}
-  else w.style.display="none"}
+  w.style.display="none"}
  $("revBox").innerHTML=due?`🔁 <b>${due}</b> word${due>1?"s":""} ready to review today<br><button class="btn y mt" id="goReview" style="padding:10px 22px">Review now</button>`:"✅ No words to review right now. Come back tomorrow!";
  if(due)$("goReview").onclick=()=>{const d=dueIds();T=null;startTest(shuffle(d),Math.min(d.length,15),"mix");show("test")};
  $("sLeft").textContent=Math.ceil(Math.max(0,WORDS.length-S.learned.length-S.known.length)/g);
@@ -3383,21 +3381,23 @@ const STORE_OK=(()=>{try{localStorage.setItem("_wg","1");localStorage.removeItem
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}   // ask the browser not to clear our data
 const slug=t=>String(t||"learner").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-zA-Z0-9]+/g,"-").replace(/^-|-$/g,"").toLowerCase().slice(0,20)||"learner";
 function backupFile(){
- const txt=JSON.stringify({app:"my-word-book",v:2,saved:new Date().toISOString(),data:S});
- const name="word-garden-"+slug(S.name)+"-"+day()+".json";
+ const json=JSON.stringify({app:"my-word-book",v:2,saved:new Date().toISOString(),data:S}).replace(/</g,"\\u003c");
+ const n=S.learned.length,k=S.known.length;
+ const txt='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Word Garden progress</title><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#e9f8f2,#fff6e6);font-family:system-ui,sans-serif;color:#17402f}.c{background:#fff;border-radius:24px;padding:28px 24px;margin:16px;max-width:360px;text-align:center;box-shadow:0 10px 30px rgba(11,138,106,.18)}h1{margin:0 0 4px;color:#0b8a6a}p{margin:6px 0}.n{font-size:44px;font-weight:800;color:#0b8a6a}small{color:#6b8a7c}</style></head><body><div class="c"><div style="font-size:48px">🌱</div><h1>Word Garden</h1><p><b>'+esc(S.name||"My")+'\u2019s progress</b></p><div class="n">'+n+'</div><p>words learned</p><p>⭐ '+k+' words I know &nbsp;·&nbsp; 🔥 '+(S.streak||0)+' day streak</p><p><small>Saved on '+day()+'.<br>Keep this file safe. To get your progress back, open Word Garden and tap “Load”, then choose this file.</small></p></div><script type="application/json" id="wg-data">'+json+'<\/script></body></html>';
+ const name="word-garden-"+slug(S.name)+"-"+day()+".html";
  return{txt,name,kb:Math.max(1,Math.round(txt.length/1024))};
 }
 function markSaved(){S.lastBackup=day();save();renderHome()}
 $("bkSave").onclick=()=>{
- const f=backupFile(),blob=new Blob([f.txt],{type:"application/json"});
+ const f=backupFile(),blob=new Blob([f.txt],{type:"text/html"});
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=f.name;
  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
  markSaved();toast("✅ Saved to your phone's Downloads folder: "+f.name+" ("+f.kb+" KB)");
 };
 // phones can also hand the file to Files / Drive / WhatsApp
-try{const t=new File(["{}"],"t.json",{type:"application/json"});if(navigator.canShare&&navigator.canShare({files:[t]}))$("bkShare").style.display="inline-block"}catch(e){}
+try{const t=new File(["x"],"t.html",{type:"text/html"});if(navigator.canShare&&navigator.canShare({files:[t]}))$("bkShare").style.display="inline-block"}catch(e){}
 $("bkShare").onclick=async()=>{
- const f=backupFile(),file=new File([f.txt],f.name,{type:"application/json"});
+ const f=backupFile(),file=new File([f.txt],f.name,{type:"text/html"});
  try{await navigator.share({files:[file],title:"My Word Garden progress"});markSaved();toast("✅ Saved ("+f.kb+" KB)")}catch(e){}
 };
 $("bkLoad").onclick=()=>$("bkFile").click();
@@ -3405,7 +3405,8 @@ $("nmRestore").onclick=()=>$("bkFile").click();
 $("bkFile").onchange=e=>{
  const f=e.target.files[0];e.target.value="";if(!f)return;if(f.size>2e6){alert("That file is too big to be a Word Garden backup.");return}const r=new FileReader();
  r.onload=()=>{try{
-  const j=JSON.parse(r.result),d=j&&j.app==="my-word-book"&&j.data&&typeof j.data==="object"?j.data:null;
+  let raw=r.result;const mm=/<script type="application\/json" id="wg-data">([\s\S]*?)<\/script>/.exec(raw);if(mm)raw=mm[1];
+  const j=JSON.parse(raw),d=j&&j.app==="my-word-book"&&j.data&&typeof j.data==="object"?j.data:null;
   if(!d||!Array.isArray(d.learned)||!Array.isArray(d.known))throw 0;
   const c=sanitize(d);
   if(!curId){ // first screen: restoring also brings back the name, so nobody has to type it again
